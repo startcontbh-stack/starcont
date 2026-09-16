@@ -25,5 +25,7 @@ node_modules/
 dados/*
 !dados/README.md
 
-# Vercel (link local do projeto)
+# Vercel (link local do projeto) e variáveis de ambiente
 .vercel
+.env*
+!.env.example
