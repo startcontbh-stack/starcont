@@ -1,0 +1,204 @@
+@import "tailwindcss";
+
+/* ====== Start Cont — Design System ======
+ * Paleta tirada dos logos e posts (identidade/referencias-startcont):
+ * azul-marinho quase preto ("apesar de parecer preto é um azul") + vermelho.
+ */
+@theme {
+  /* Marca — azul-marinho + vermelho */
+  --color-azul: #1b2d5c; /* links e destaques sobre fundo claro */
+  --color-azul-escuro: #0b1530; /* azul-marinho da marca */
+  --color-azul-profundo: #050a1a; /* fundo escuro, quase preto */
+  --color-vermelho: #d0142c; /* CTA e palavra-chave */
+  --color-vermelho-escuro: #a50f23;
+  --color-vermelho-claro: #ff5a66; /* texto vermelho sobre fundo escuro (contraste AA) */
+
+  /* Neutros */
+  --color-branco: #ffffff;
+  --color-nevoa: #f4f5f9;
+  --color-cinza-claro: #e5e8f0;
+  --color-cinza: #667085;
+  --color-cinza-escuro: #344054;
+  --color-tinta: #0b1220;
+
+  /* Tokens semânticos (usados por componentes estilo shadcn) */
+  --color-background: #ffffff;
+  --color-foreground: #0b1220;
+  --color-card: #ffffff;
+  --color-muted: #f4f5f9;
+  --color-muted-foreground: #667085;
+  --color-secondary: #e5e8f0;
+  --color-border: #e5e8f0;
+  --color-ring: #1b2d5c;
+
+  /* Fontes (variáveis injetadas no layout) */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-montserrat), var(--font-inter), sans-serif;
+  --font-marca: var(--font-comfortaa), var(--font-montserrat), sans-serif;
+
+  /* Sombras suaves */
+  --shadow-suave: 0 4px 24px -8px rgba(5, 10, 26, 0.18);
+  --shadow-card: 0 8px 30px -12px rgba(5, 10, 26, 0.28);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-branco);
+  color: var(--color-tinta);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: var(--color-vermelho);
+  color: #fff;
+}
+
+/* ====== Conteúdo do blog (prose) ====== */
+.prose-conteudo {
+  color: var(--color-cinza-escuro);
+  line-height: 1.8;
+  font-size: 1.075rem;
+}
+.prose-conteudo > * + * {
+  margin-top: 1.15rem;
+}
+.prose-conteudo h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-azul-escuro);
+  margin-top: 2.2rem;
+  margin-bottom: 0.4rem;
+}
+.prose-conteudo h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-azul-escuro);
+  margin-top: 1.6rem;
+}
+.prose-conteudo p { margin: 0; }
+.prose-conteudo a {
+  color: var(--color-vermelho);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-conteudo ul, .prose-conteudo ol {
+  padding-left: 1.4rem;
+}
+.prose-conteudo ul { list-style: disc; }
+.prose-conteudo ol { list-style: decimal; }
+.prose-conteudo li { margin-top: 0.4rem; }
+.prose-conteudo li::marker { color: var(--color-vermelho); }
+.prose-conteudo blockquote {
+  border-left: 4px solid var(--color-vermelho);
+  padding-left: 1rem;
+  font-style: italic;
+  color: var(--color-cinza);
+}
+.prose-conteudo img {
+  border-radius: 16px;
+  margin: 1.6rem 0;
+  box-shadow: var(--shadow-card);
+}
+.prose-conteudo strong { color: var(--color-tinta); font-weight: 600; }
+
+/* ====== Editor Tiptap (admin) ====== */
+.tiptap:focus { outline: none; }
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--color-cinza);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Animações sutis */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.7s ease both; }
+
+/* Reveal on scroll — usado pelo componente <Reveal> */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Pulse suave pro CTA do WhatsApp — chama atenção sem ser agressivo */
+@keyframes pulse-cta {
+  0%, 100% { transform: scale(1); box-shadow: 0 10px 30px -8px rgba(37, 211, 102, 0.7); }
+  50% { transform: scale(1.025); box-shadow: 0 14px 38px -8px rgba(37, 211, 102, 0.9); }
+}
+.animate-pulse-cta { animation: pulse-cta 2s ease-in-out infinite; }
+
+/* Arcos finos vermelhos — elemento gráfico dos posts e logos da marca */
+.arco-marca {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(255, 43, 58, 0.55);
+}
+
+/* Malha de pontinhos — detalhe dos stories da marca */
+.pontilhado {
+  pointer-events: none;
+  position: absolute;
+  background-image: radial-gradient(rgba(255, 90, 102, 0.45) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+/* ====== ScrollReelTestimonials (equipe) ====== */
+@keyframes scroll-reel-char-rise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes scroll-reel-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+.scroll-reel-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.6em);
+  animation: scroll-reel-char-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.scroll-reel-exit {
+  animation: scroll-reel-exit 240ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reel-char {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

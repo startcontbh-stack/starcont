@@ -1,0 +1,64 @@
+// Start Cont — schema do banco
+// Postgres (Neon na Vercel). DATABASE_URL = conexão pooled;
+// DATABASE_URL_UNPOOLED = conexão direta (usada nas migrações).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model Post {
+  id         String   @id @default(cuid())
+  title      String
+  slug       String   @unique
+  coverImage String?
+  content    String // HTML gerado pelo editor
+  excerpt    String?
+  published  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  // Autor do artigo (contador da equipe) — usado para E-E-A-T / SEO
+  author     Author?  @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId   String?
+}
+
+// Profissional da Start Cont que assina os artigos.
+// Campos pensados para sinais de E-E-A-T do Google (autoria, credenciais e
+// perfis verificáveis via schema.org Person/sameAs).
+model Author {
+  id         String   @id @default(cuid())
+  name       String
+  slug       String   @unique
+  role       String // cargo, ex.: "Contador · Fundador da Start Cont"
+  credential String? // registro profissional, ex.: "CRC-MG 000000/O"
+  bio        String // biografia (autoridade / experiência)
+  image      String? // foto do profissional
+  email      String?
+  // Perfis verificáveis (viram sameAs no JSON-LD) — reforçam E-E-A-T
+  instagram  String?
+  linkedin   String?
+  website    String?
+  posts      Post[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Lead {
+  id           String   @id @default(cuid())
+  nome         String
+  cidade       String
+  telefone     String
+  // "Do que você precisa?" do formulário (abrir empresa, IR, etc.)
+  interesse    String?
+  origem       String   @default("site") // de qual página veio
+  // Estágio no funil (Kanban): entrou_em_contato | aguardando_fechamento | fechado
+  status       String   @default("entrou_em_contato")
+  // Responsável pelo atendimento (lista em responsaveisCrm, @/lib/site)
+  profissional String?
+  createdAt    DateTime @default(now())
+}
