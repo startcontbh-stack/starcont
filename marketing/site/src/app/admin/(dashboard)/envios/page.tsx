@@ -16,20 +16,22 @@ const dataHora = new Intl.DateTimeFormat("pt-BR", {
 
 export default async function EnviosPage() {
   const envios = await prisma.envio.findMany({
-    orderBy: [{ competencia: "desc" }, { createdAt: "desc" }],
+    orderBy: [{ competenciaInicio: "desc" }, { createdAt: "desc" }],
     include: { arquivos: { orderBy: { createdAt: "asc" } } },
   });
 
-  // Agrupa por mês de referência mantendo a ordem da consulta (mais recente
-  // primeiro), pra o contador fechar um mês de cada vez.
+  // Agrupa pelo mês inicial do período, mantendo a ordem da consulta (mais
+  // recente primeiro), pra o contador fechar um mês de cada vez.
   const porCompetencia = new Map<string, EnvioCardData[]>();
   for (const e of envios) {
-    const lista = porCompetencia.get(e.competencia) ?? [];
+    const lista = porCompetencia.get(e.competenciaInicio) ?? [];
     lista.push({
       id: e.id,
       nomeCliente: e.nomeCliente,
-      empresa: e.empresa,
+      documento: e.documento,
       telefone: e.telefone,
+      competenciaInicio: e.competenciaInicio,
+      competenciaFim: e.competenciaFim,
       faturamentoCentavos: e.faturamentoCentavos,
       semMovimento: e.semMovimento,
       observacoes: e.observacoes,
@@ -37,12 +39,13 @@ export default async function EnviosPage() {
       criadoEm: dataHora.format(e.createdAt),
       arquivos: e.arquivos.map((a) => ({
         id: a.id,
+        categoria: a.categoria,
         nome: a.nome,
         url: a.url,
         tamanho: a.tamanho,
       })),
     });
-    porCompetencia.set(e.competencia, lista);
+    porCompetencia.set(e.competenciaInicio, lista);
   }
 
   const portalLiberado = senhaConfigurada("portal");
@@ -87,6 +90,7 @@ export default async function EnviosPage() {
               (soma, e) => soma + (e.semMovimento ? 0 : (e.faturamentoCentavos ?? 0)),
               0
             );
+            const arquivos = lista.reduce((n, e) => n + e.arquivos.length, 0);
             return (
               <section key={competencia}>
                 <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-cinza-claro pb-3">
@@ -95,6 +99,7 @@ export default async function EnviosPage() {
                   </h2>
                   <p className="text-sm text-cinza">
                     {lista.length} envio{lista.length > 1 ? "s" : ""} ·{" "}
+                    {arquivos} documento{arquivos === 1 ? "" : "s"} ·{" "}
                     <span className="font-medium text-cinza-escuro">
                       {formatarBRL(total)}
                     </span>{" "}

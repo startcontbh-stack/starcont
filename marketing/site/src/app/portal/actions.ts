@@ -10,7 +10,15 @@ import {
   isAuthenticated,
   senhaConfigurada,
 } from "@/lib/auth";
-import { protocolo, TIPOS_ACEITOS } from "@/lib/portal";
+import {
+  apenasDigitos,
+  categoriaValida,
+  competenciaValida,
+  documentoValido,
+  MAX_ARQUIVOS,
+  protocolo,
+  tipoPermitido,
+} from "@/lib/portal";
 
 export type EstadoForm = { error?: string } | undefined;
 
@@ -38,10 +46,16 @@ export async function logoutPortal() {
   redirect("/portal/login");
 }
 
-// ---- Envio mensal ----
+// ---- Envio do malote ----
 
 /** Anexo já enviado pelo /api/portal/upload, como o formulário o devolve. */
-type Anexo = { nome: string; url: string; tipo: string; tamanho: number };
+type Anexo = {
+  categoria: string;
+  nome: string;
+  url: string;
+  tipo: string;
+  tamanho: number;
+};
 
 function lerAnexos(bruto: string): Anexo[] {
   try {
@@ -55,9 +69,10 @@ function lerAnexos(bruto: string): Anexo[] {
           typeof a.nome === "string" &&
           typeof a.tipo === "string" &&
           Number.isFinite(a.tamanho) &&
-          TIPOS_ACEITOS.includes(a.tipo)
+          categoriaValida(a.categoria) &&
+          tipoPermitido(a.nome)
       )
-      .slice(0, 20);
+      .slice(0, MAX_ARQUIVOS);
   } catch {
     return [];
   }
@@ -72,9 +87,10 @@ export async function criarEnvio(
   }
 
   const nomeCliente = String(formData.get("nomeCliente") ?? "").trim();
-  const empresa = String(formData.get("empresa") ?? "").trim() || null;
+  const documento = apenasDigitos(String(formData.get("documento") ?? ""));
   const telefone = String(formData.get("telefone") ?? "").trim() || null;
-  const competencia = String(formData.get("competencia") ?? "").trim();
+  const competenciaInicio = String(formData.get("competenciaInicio") ?? "").trim();
+  const competenciaFim = String(formData.get("competenciaFim") ?? "").trim();
   const semMovimento = formData.get("semMovimento") === "on";
   const observacoes = String(formData.get("observacoes") ?? "").trim() || null;
   const anexos = lerAnexos(String(formData.get("arquivos") ?? "[]"));
@@ -87,32 +103,45 @@ export async function criarEnvio(
       ? Math.round(centavosBruto)
       : null;
 
+  // Só período, nome e documento travam o envio. Os anexos são todos
+  // opcionais — nem todo cliente tem movimento em todas as categorias.
+  if (!competenciaValida(competenciaInicio) || !competenciaValida(competenciaFim)) {
+    return { error: "Escolha o período do envio." };
+  }
+  if (competenciaFim < competenciaInicio) {
+    return { error: "O mês final do período não pode ser anterior ao inicial." };
+  }
   if (nomeCliente.length < 3) {
-    return { error: "Informe seu nome e sobrenome." };
+    return { error: "Informe o nome do cliente." };
   }
-  if (!/^\d{4}-\d{2}$/.test(competencia)) {
-    return { error: "Escolha o mês de referência." };
-  }
-  if (!semMovimento && !faturamentoCentavos) {
+  if (!documentoValido(documento)) {
     return {
       error:
-        "Informe o faturamento do mês ou marque a opção de mês sem movimento.",
+        documento.length === 0
+          ? "Informe o CNPJ ou o CPF."
+          : "CNPJ ou CPF inválido. Confira os números digitados.",
     };
-  }
-  if (anexos.length === 0) {
-    return { error: "Anexe o extrato bancário do mês (PDF ou imagem)." };
   }
 
   const envio = await prisma.envio.create({
     data: {
       nomeCliente,
-      empresa,
+      documento,
       telefone,
-      competencia,
+      competenciaInicio,
+      competenciaFim,
       semMovimento,
       observacoes,
       faturamentoCentavos: semMovimento ? null : faturamentoCentavos,
-      arquivos: { create: anexos },
+      arquivos: {
+        create: anexos.map((a) => ({
+          categoria: a.categoria,
+          nome: a.nome,
+          url: a.url,
+          tipo: a.tipo,
+          tamanho: a.tamanho,
+        })),
+      },
     },
   });
 

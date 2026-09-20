@@ -39,12 +39,13 @@ export default async function PortalPage() {
 
       <div className="mx-auto max-w-2xl px-5 py-8 sm:py-12">
         <h1 className="font-display text-2xl font-bold text-azul-escuro sm:text-3xl">
-          Envio do mês
+          Envio de documentos
         </h1>
         <p className="mt-2 leading-relaxed text-cinza-escuro">
-          Cinco perguntas rápidas: quem é você, de qual mês é o envio, quanto
-          faturou e o extrato bancário. A {site.nome} recebe tudo organizado do
-          outro lado.
+          Só o <strong>período</strong>, o <strong>nome</strong> e o{" "}
+          <strong>CNPJ ou CPF</strong> são obrigatórios. Os campos de documento
+          são todos opcionais — anexe o que tiver no período, quantos arquivos
+          quiser em cada um. A {site.nome} recebe tudo separado do outro lado.
         </p>
 
         <div className="mt-8">

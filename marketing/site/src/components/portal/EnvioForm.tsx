@@ -3,13 +3,24 @@
 import { useActionState, useRef, useState } from "react";
 import { criarEnvio } from "@/app/portal/actions";
 import {
+  apenasDigitos,
+  CATEGORIAS_DOCUMENTO,
+  EXTENSOES_ACEITAS,
+  formatarDocumento,
   formatarTamanho,
+  periodoLabel,
   TAMANHO_MAX_MB,
-  TIPOS_ACEITOS,
+  type CategoriaId,
 } from "@/lib/portal";
 import { DocumentIcon, TrashIcon, UploadIcon } from "@/components/Icons";
 
-type Anexo = { nome: string; url: string; tipo: string; tamanho: number };
+type Anexo = {
+  categoria: CategoriaId;
+  nome: string;
+  url: string;
+  tipo: string;
+  tamanho: number;
+};
 type Competencia = { valor: string; label: string };
 
 const campoClasses =
@@ -27,22 +38,29 @@ function Pergunta({
   numero,
   titulo,
   ajuda,
+  obrigatorio,
   children,
 }: {
   numero: number;
   titulo: string;
   ajuda?: string;
+  obrigatorio?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <section className="rounded-2xl border border-cinza-claro bg-white p-5 shadow-suave sm:p-6">
       <div className="flex items-start gap-3">
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-azul text-sm font-semibold text-white">
+        <span
+          className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-semibold text-white ${
+            obrigatorio ? "bg-vermelho" : "bg-azul"
+          }`}
+        >
           {numero}
         </span>
         <div className="min-w-0 flex-1">
           <h2 className="font-display text-base font-semibold text-azul-escuro">
             {titulo}
+            {obrigatorio && <span className="ml-1 text-vermelho">*</span>}
           </h2>
           {ajuda && <p className="mt-1 text-sm text-cinza">{ajuda}</p>}
           <div className="mt-4">{children}</div>
@@ -58,12 +76,11 @@ export function EnvioForm({ competencias }: { competencias: Competencia[] }) {
   /**
    * Os campos de texto são controlados de propósito. O React limpa o
    * formulário quando a ação termina, e como a ação volta com erro de
-   * validação (faltou o extrato, por exemplo), um campo não controlado
-   * apagaria tudo que a pessoa acabou de digitar.
+   * validação, um campo não controlado apagaria tudo que a pessoa
+   * acabou de digitar.
    */
   const [texto, setTexto] = useState({
     nomeCliente: "",
-    empresa: "",
     telefone: "",
     observacoes: "",
   });
@@ -74,21 +91,24 @@ export function EnvioForm({ competencias }: { competencias: Competencia[] }) {
     ) => setTexto((t) => ({ ...t, [nome]: e.target.value })),
   });
 
-  const [competencia, setCompetencia] = useState(competencias[0]?.valor ?? "");
+  const primeiro = competencias[0]?.valor ?? "";
+  const [inicio, setInicio] = useState(primeiro);
+  const [fim, setFim] = useState(primeiro);
+  const [documento, setDocumento] = useState("");
   const [centavos, setCentavos] = useState(0);
   const [semMovimento, setSemMovimento] = useState(false);
   const [anexos, setAnexos] = useState<Anexo[]>([]);
   const [enviando, setEnviando] = useState(0);
   const [erroUpload, setErroUpload] = useState<string | null>(null);
-  const inputArquivo = useRef<HTMLInputElement>(null);
 
-  async function receberArquivos(e: React.ChangeEvent<HTMLInputElement>) {
-    const arquivos = Array.from(e.target.files ?? []);
-    // Limpa o input já: sem isso, escolher o mesmo arquivo de novo não dispara
-    // o change e o cliente acha que o anexo sumiu.
-    if (inputArquivo.current) inputArquivo.current.value = "";
+  // O mês final nunca pode ser anterior ao inicial.
+  function mudarInicio(valor: string) {
+    setInicio(valor);
+    if (fim < valor) setFim(valor);
+  }
+
+  async function subirArquivos(categoria: CategoriaId, arquivos: File[]) {
     if (arquivos.length === 0) return;
-
     setErroUpload(null);
     setEnviando((n) => n + arquivos.length);
 
@@ -96,7 +116,8 @@ export function EnvioForm({ competencias }: { competencias: Competencia[] }) {
       try {
         const fd = new FormData();
         fd.append("file", arquivo);
-        fd.append("competencia", competencia);
+        fd.append("competencia", inicio);
+        fd.append("categoria", categoria);
         const res = await fetch("/api/portal/upload", {
           method: "POST",
           body: fd,
@@ -106,6 +127,7 @@ export function EnvioForm({ competencias }: { competencias: Competencia[] }) {
           setAnexos((lista) => [
             ...lista,
             {
+              categoria,
               nome: data.nome,
               url: data.url,
               tipo: data.tipo,
@@ -130,6 +152,7 @@ export function EnvioForm({ competencias }: { competencias: Competencia[] }) {
   }
 
   const bloqueado = pending || enviando > 0;
+  const totalAnexos = anexos.length;
 
   return (
     <form action={action} className="space-y-5">
@@ -139,91 +162,127 @@ export function EnvioForm({ competencias }: { competencias: Competencia[] }) {
         name="faturamentoCentavos"
         value={semMovimento ? 0 : centavos}
       />
+      {/* O campo visível leva a máscara; o que vai pro servidor são os dígitos. */}
+      <input
+        type="hidden"
+        name="documento"
+        value={apenasDigitos(documento)}
+      />
 
+      {/* 1 — Período */}
       <Pergunta
         numero={1}
-        titulo="Quem está enviando?"
-        ajuda="Para o contador saber de quem é o documento."
+        titulo="Período"
+        ajuda="De qual mês é esse malote. Se for mais de um mês, marque o mês inicial e o final."
+        obrigatorio
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
+          <div>
             <label
-              htmlFor="nomeCliente"
+              htmlFor="competenciaInicio"
               className="mb-1.5 block text-sm font-medium text-cinza-escuro"
             >
-              Nome e sobrenome <span className="text-vermelho">*</span>
+              Mês inicial
             </label>
-            <input
-              id="nomeCliente"
-              name="nomeCliente"
+            <select
+              id="competenciaInicio"
+              name="competenciaInicio"
               required
-              autoComplete="name"
-              placeholder="Ex.: Maria Silva"
+              value={inicio}
+              onChange={(e) => mudarInicio(e.target.value)}
               className={campoClasses}
-              {...campo("nomeCliente")}
-            />
+            >
+              {competencias.map((c) => (
+                <option key={c.valor} value={c.valor}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label
-              htmlFor="empresa"
+              htmlFor="competenciaFim"
               className="mb-1.5 block text-sm font-medium text-cinza-escuro"
             >
-              Empresa ou CNPJ
+              Mês final
             </label>
-            <input
-              id="empresa"
-              name="empresa"
-              placeholder="Ex.: Barbearia do Zé"
+            <select
+              id="competenciaFim"
+              name="competenciaFim"
+              required
+              value={fim}
+              onChange={(e) => setFim(e.target.value)}
               className={campoClasses}
-              {...campo("empresa")}
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="telefone"
-              className="mb-1.5 block text-sm font-medium text-cinza-escuro"
             >
-              WhatsApp
-            </label>
-            <input
-              id="telefone"
-              name="telefone"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="(31) 9 0000-0000"
-              className={campoClasses}
-              {...campo("telefone")}
-            />
+              {competencias
+                .filter((c) => c.valor >= inicio)
+                .map((c) => (
+                  <option key={c.valor} value={c.valor}>
+                    {c.label}
+                  </option>
+                ))}
+            </select>
           </div>
+        </div>
+        <p className="mt-2 text-sm text-cinza">
+          Enviando os documentos de{" "}
+          <strong className="font-semibold text-azul-escuro">
+            {periodoLabel(inicio, fim)}
+          </strong>
+          .
+        </p>
+      </Pergunta>
+
+      {/* 2 — Nome */}
+      <Pergunta numero={2} titulo="Nome do cliente" obrigatorio>
+        <input
+          id="nomeCliente"
+          name="nomeCliente"
+          required
+          autoComplete="name"
+          placeholder="Nome completo ou razão social"
+          className={campoClasses}
+          {...campo("nomeCliente")}
+        />
+      </Pergunta>
+
+      {/* 3 — CNPJ ou CPF */}
+      <Pergunta numero={3} titulo="CNPJ ou CPF" obrigatorio>
+        <input
+          id="documentoVisivel"
+          inputMode="numeric"
+          required
+          value={documento}
+          onChange={(e) => setDocumento(formatarDocumento(e.target.value))}
+          placeholder="00.000.000/0000-00 ou 000.000.000-00"
+          aria-label="CNPJ ou CPF"
+          className={campoClasses}
+        />
+        <div className="mt-4">
+          <label
+            htmlFor="telefone"
+            className="mb-1.5 block text-sm font-medium text-cinza-escuro"
+          >
+            WhatsApp <span className="font-normal text-cinza">(opcional)</span>
+          </label>
+          <input
+            id="telefone"
+            name="telefone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="(31) 9 0000-0000"
+            className={campoClasses}
+            {...campo("telefone")}
+          />
         </div>
       </Pergunta>
 
+      {/* 4 — Faturamento */}
       <Pergunta
-        numero={2}
-        titulo="De qual mês é esse envio?"
-        ajuda="O mês de referência do faturamento e do extrato."
-      >
-        <select
-          id="competencia"
-          name="competencia"
-          required
-          value={competencia}
-          onChange={(e) => setCompetencia(e.target.value)}
-          className={campoClasses}
-        >
-          {competencias.map((c) => (
-            <option key={c.valor} value={c.valor}>
-              {c.label}
-            </option>
-          ))}
-        </select>
-      </Pergunta>
-
-      <Pergunta
-        numero={3}
-        titulo="Qual foi o faturamento do mês?"
-        ajuda="O total que entrou no período, antes de descontar despesas."
+        numero={4}
+        titulo="Valor total faturado no período"
+        ajuda="O total que entrou, antes de descontar despesas."
       >
         <div
           className={`relative transition-opacity ${
@@ -243,7 +302,7 @@ export function EnvioForm({ competencias }: { competencias: Competencia[] }) {
               setCentavos(Number(digitos));
             }}
             placeholder="0,00"
-            aria-label="Faturamento do mês em reais"
+            aria-label="Valor total faturado no período, em reais"
             className={`${campoClasses} pl-11 font-display text-lg`}
           />
         </div>
@@ -257,77 +316,33 @@ export function EnvioForm({ competencias }: { competencias: Competencia[] }) {
             className="mt-0.5 h-4 w-4 rounded border-cinza-claro text-azul focus:ring-azul"
           />
           <span className="text-sm text-cinza-escuro">
-            Não tive movimento nesse mês
+            Não tive movimento no período
           </span>
         </label>
       </Pergunta>
 
-      <Pergunta
-        numero={4}
-        titulo="Anexe o extrato bancário"
-        ajuda={`PDF do extrato do mês (o do banco mesmo). Também aceitamos fotos e prints. Até ${TAMANHO_MAX_MB} MB por arquivo.`}
-      >
-        <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-cinza-claro bg-nevoa px-4 py-8 text-center transition hover:border-azul hover:bg-white">
-          <input
-            ref={inputArquivo}
-            type="file"
-            accept={TIPOS_ACEITOS.join(",")}
-            multiple
-            onChange={receberArquivos}
-            className="hidden"
+      {/* 5 a 10 — anexos por categoria */}
+      {CATEGORIAS_DOCUMENTO.map((cat) => (
+        <Pergunta
+          key={cat.id}
+          numero={cat.numero}
+          titulo={cat.titulo}
+          ajuda={cat.ajuda}
+        >
+          <CampoArquivos
+            destacado={"apenasBeleza" in cat && cat.apenasBeleza}
+            anexos={anexos.filter((a) => a.categoria === cat.id)}
+            onEscolher={(arquivos) => subirArquivos(cat.id, arquivos)}
+            onRemover={removerAnexo}
           />
-          <UploadIcon className="h-7 w-7 text-azul" />
-          <span className="text-sm font-medium text-azul-escuro">
-            {enviando > 0
-              ? `Enviando ${enviando} arquivo${enviando > 1 ? "s" : ""}...`
-              : "Toque para escolher os arquivos"}
-          </span>
-          <span className="text-xs text-cinza">PDF, JPG ou PNG</span>
-        </label>
+        </Pergunta>
+      ))}
 
-        {erroUpload && (
-          <p
-            role="alert"
-            className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600"
-          >
-            {erroUpload}
-          </p>
-        )}
-
-        {anexos.length > 0 && (
-          <ul className="mt-4 space-y-2">
-            {anexos.map((a) => (
-              <li
-                key={a.url}
-                className="flex items-center gap-3 rounded-xl border border-cinza-claro bg-white px-3.5 py-2.5"
-              >
-                <DocumentIcon className="h-5 w-5 shrink-0 text-azul" />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-medium text-tinta">
-                    {a.nome}
-                  </span>
-                  <span className="text-xs text-cinza">
-                    {formatarTamanho(a.tamanho)}
-                  </span>
-                </span>
-                <button
-                  type="button"
-                  onClick={() => removerAnexo(a.url)}
-                  aria-label={`Remover ${a.nome}`}
-                  className="shrink-0 rounded-lg p-2 text-cinza transition hover:bg-red-50 hover:text-red-600"
-                >
-                  <TrashIcon className="h-4 w-4" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Pergunta>
-
+      {/* 11 — observações */}
       <Pergunta
-        numero={5}
+        numero={11}
         titulo="Quer avisar mais alguma coisa?"
-        ajuda="Opcional — algo fora do comum no mês, uma dúvida, um aviso."
+        ajuda="Opcional — algo fora do comum no período, uma dúvida, um aviso."
       >
         <textarea
           id="observacoes"
@@ -339,6 +354,15 @@ export function EnvioForm({ competencias }: { competencias: Competencia[] }) {
         />
       </Pergunta>
 
+      {erroUpload && (
+        <p
+          role="alert"
+          className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600"
+        >
+          {erroUpload}
+        </p>
+      )}
+
       {state?.error && (
         <p
           role="alert"
@@ -348,17 +372,98 @@ export function EnvioForm({ competencias }: { competencias: Competencia[] }) {
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={bloqueado}
-        className="w-full rounded-xl bg-vermelho px-6 py-4 font-semibold text-white shadow-card transition-colors hover:bg-vermelho-escuro disabled:opacity-60"
-      >
-        {pending
-          ? "Enviando..."
-          : enviando > 0
-            ? "Aguarde os anexos terminarem..."
-            : "Enviar para a Start Cont"}
-      </button>
+      <div className="sticky bottom-0 -mx-1 bg-nevoa/95 px-1 pb-1 pt-3 backdrop-blur">
+        <button
+          type="submit"
+          disabled={bloqueado}
+          className="w-full rounded-xl bg-vermelho px-6 py-4 font-semibold text-white shadow-card transition-colors hover:bg-vermelho-escuro disabled:opacity-60"
+        >
+          {pending
+            ? "Enviando..."
+            : enviando > 0
+              ? "Aguarde os anexos terminarem..."
+              : `Enviar para a Start Cont${totalAnexos > 0 ? ` (${totalAnexos} documento${totalAnexos > 1 ? "s" : ""})` : ""}`}
+        </button>
+      </div>
     </form>
+  );
+}
+
+/** Uma caixa de upload com a lista dos arquivos já anexados naquele campo. */
+function CampoArquivos({
+  destacado,
+  anexos,
+  onEscolher,
+  onRemover,
+}: {
+  destacado?: boolean;
+  anexos: Anexo[];
+  onEscolher: (arquivos: File[]) => void;
+  onRemover: (url: string) => void;
+}) {
+  const input = useRef<HTMLInputElement>(null);
+
+  return (
+    <div>
+      <label
+        className={`flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed px-4 py-6 text-center transition hover:bg-white ${
+          destacado
+            ? "border-vermelho/40 bg-vermelho/5 hover:border-vermelho"
+            : "border-cinza-claro bg-nevoa hover:border-azul"
+        }`}
+      >
+        <input
+          ref={input}
+          type="file"
+          accept={EXTENSOES_ACEITAS.join(",")}
+          multiple
+          onChange={(e) => {
+            const arquivos = Array.from(e.target.files ?? []);
+            // Limpa o input já: sem isso, escolher o mesmo arquivo de novo não
+            // dispara o change e o cliente acha que o anexo sumiu.
+            if (input.current) input.current.value = "";
+            onEscolher(arquivos);
+          }}
+          className="hidden"
+        />
+        <UploadIcon className={`h-6 w-6 ${destacado ? "text-vermelho" : "text-azul"}`} />
+        <span className="text-sm font-medium text-azul-escuro">
+          Anexar documentos
+        </span>
+        <span className="text-xs text-cinza">
+          Vários de uma vez · PDF, imagem, XML, planilha ou ZIP · até{" "}
+          {TAMANHO_MAX_MB} MB cada
+        </span>
+      </label>
+
+      {anexos.length > 0 && (
+        <ul className="mt-3 space-y-2">
+          {anexos.map((a) => (
+            <li
+              key={a.url}
+              className="flex items-center gap-3 rounded-xl border border-cinza-claro bg-white px-3.5 py-2.5"
+            >
+              <DocumentIcon className="h-5 w-5 shrink-0 text-azul" />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium text-tinta">
+                  {a.nome}
+                </span>
+                <span className="text-xs text-cinza">
+                  {formatarTamanho(a.tamanho)}
+                </span>
+              </span>
+              <button
+                type="button"
+                onClick={() => onRemover(a.url)}
+                aria-label={`Remover ${a.nome}`}
+                className="shrink-0 rounded-lg p-2 text-cinza transition hover:bg-red-50 hover:text-red-600"
+              >
+                <TrashIcon className="h-4 w-4" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

@@ -3,14 +3,20 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { isAuthenticated } from "@/lib/auth";
 import { slugify } from "@/lib/utils";
-import { TAMANHO_MAX_BYTES, TAMANHO_MAX_MB, TIPOS_ACEITOS } from "@/lib/portal";
+import {
+  categoriaValida,
+  competenciaValida,
+  TAMANHO_MAX_BYTES,
+  TAMANHO_MAX_MB,
+  tipoPermitido,
+} from "@/lib/portal";
 
 /**
- * Upload dos anexos do cliente (extrato bancário em PDF, prints).
+ * Upload dos anexos do cliente — notas, boletos, extratos, documentos de DP.
  *
  * O arquivo sobe por aqui assim que o cliente escolhe, e só a URL vai no
- * formulário. Server Action recebendo o PDF inteiro esbarraria no limite de
- * corpo da requisição — extrato de banco passa de 1 MB sem dificuldade.
+ * formulário. Server Action recebendo os PDFs inteiros esbarraria no limite
+ * de corpo da requisição — um malote de notas passa disso com folga.
  *
  * Produção (Vercel): Vercel Blob, se BLOB_READ_WRITE_TOKEN existir.
  * Dev: salva em /public/uploads.
@@ -25,7 +31,8 @@ export async function POST(request: Request) {
 
   const formData = await request.formData();
   const file = formData.get("file");
-  const competencia = String(formData.get("competencia") ?? "").slice(0, 7);
+  const competencia = String(formData.get("competencia") ?? "");
+  const categoria = String(formData.get("categoria") ?? "");
 
   if (!(file instanceof File)) {
     return NextResponse.json(
@@ -34,9 +41,19 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!TIPOS_ACEITOS.includes(file.type)) {
+  if (!categoriaValida(categoria)) {
     return NextResponse.json(
-      { ok: false, error: "Envie um PDF ou uma imagem (JPG, PNG)." },
+      { ok: false, error: "Categoria de documento inválida." },
+      { status: 400 }
+    );
+  }
+
+  if (!tipoPermitido(file.name)) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Formato não aceito. Envie PDF, imagem, XML, planilha ou ZIP.",
+      },
       { status: 400 }
     );
   }
@@ -50,20 +67,21 @@ export async function POST(request: Request) {
 
   const ext = (file.name.split(".").pop() || "pdf").toLowerCase().slice(0, 5);
   const base = slugify(file.name.replace(/\.[^.]+$/, "")) || "documento";
-  const pasta = /^\d{4}-\d{2}$/.test(competencia) ? competencia : "sem-competencia";
+  const pasta = competenciaValida(competencia) ? competencia : "sem-periodo";
   const filename = `${base}-${Date.now()}.${ext}`;
 
   const resposta = {
     ok: true as const,
+    categoria,
     nome: file.name,
-    tipo: file.type,
+    tipo: file.type || "application/octet-stream",
     tamanho: file.size,
   };
 
   // Vercel Blob (produção)
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     const { put } = await import("@vercel/blob");
-    const blob = await put(`envios/${pasta}/${filename}`, file, {
+    const blob = await put(`envios/${pasta}/${categoria}/${filename}`, file, {
       access: "public",
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
@@ -72,12 +90,19 @@ export async function POST(request: Request) {
 
   // Dev: filesystem local
   const buffer = Buffer.from(await file.arrayBuffer());
-  const uploadDir = path.join(process.cwd(), "public", "uploads", "envios", pasta);
+  const uploadDir = path.join(
+    process.cwd(),
+    "public",
+    "uploads",
+    "envios",
+    pasta,
+    categoria
+  );
   await mkdir(uploadDir, { recursive: true });
   await writeFile(path.join(uploadDir, filename), buffer);
 
   return NextResponse.json({
     ...resposta,
-    url: `/uploads/envios/${pasta}/${filename}`,
+    url: `/uploads/envios/${pasta}/${categoria}/${filename}`,
   });
 }
