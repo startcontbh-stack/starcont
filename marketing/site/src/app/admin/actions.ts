@@ -11,6 +11,7 @@ import {
 } from "@/lib/auth";
 import { slugify } from "@/lib/utils";
 import { responsaveisCrm } from "@/lib/site";
+import { statusValido } from "@/lib/portal";
 
 async function requireAuth() {
   if (!(await isAuthenticated())) {
@@ -147,6 +148,24 @@ export async function deleteLead(formData: FormData) {
   const id = String(formData.get("id"));
   await prisma.lead.delete({ where: { id } });
   revalidatePath("/admin/leads");
+}
+
+// ---- Envios dos clientes (portal) ----
+export async function updateEnvioStatus(id: string, status: string) {
+  await requireAuth();
+  if (!statusValido(status)) return;
+  await prisma.envio.update({ where: { id }, data: { status } });
+  revalidatePath("/admin/envios");
+  revalidatePath("/admin");
+}
+
+export async function deleteEnvio(formData: FormData) {
+  await requireAuth();
+  const id = String(formData.get("id"));
+  // Os arquivos do envio saem junto (onDelete: Cascade no schema).
+  await prisma.envio.delete({ where: { id } });
+  revalidatePath("/admin/envios");
+  revalidatePath("/admin");
 }
 
 // ---- Autores (equipe que assina os posts) ----

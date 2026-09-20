@@ -2,6 +2,7 @@ import Link from "next/link";
 import { mensagemPadrao, servicoPath, servicos, site, whatsappLink } from "@/lib/site";
 import {
   InstagramIcon,
+  LockIcon,
   MailIcon,
   MapPinIcon,
   PhoneIcon,
@@ -94,6 +95,15 @@ export function Footer() {
             <li>
               <Link href="/blog" className="text-cinza-claro/85 hover:text-branco">
                 Blog
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/portal"
+                className="inline-flex items-center gap-1.5 text-cinza-claro/85 hover:text-branco"
+              >
+                <LockIcon className="h-4 w-4 text-vermelho-claro" />
+                Área do cliente
               </Link>
             </li>
           </ul>

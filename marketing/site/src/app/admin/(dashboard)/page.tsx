@@ -4,19 +4,22 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function AdminHome() {
-  const [totalPosts, publicados, totalLeads, leadsRecentes] = await Promise.all(
-    [
-      prisma.post.count(),
+  const [publicados, totalLeads, leadsRecentes, enviosAbertos] =
+    await Promise.all([
       prisma.post.count({ where: { published: true } }),
       prisma.lead.count(),
       prisma.lead.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
-    ]
-  );
+      prisma.envio.count({ where: { status: { not: "concluido" } } }),
+    ]);
 
   const cards = [
     { label: "Posts publicados", value: publicados, href: "/admin/posts" },
-    { label: "Posts no total", value: totalPosts, href: "/admin/posts" },
     { label: "Contatos recebidos", value: totalLeads, href: "/admin/leads" },
+    {
+      label: "Envios a tratar",
+      value: enviosAbertos,
+      href: "/admin/envios",
+    },
   ];
 
   return (
@@ -25,7 +28,8 @@ export default async function AdminHome() {
         Bem-vindo(a) ao painel
       </h1>
       <p className="mt-1 text-cinza">
-        Gerencie os posts do blog e acompanhe os contatos recebidos.
+        Gerencie os posts do blog, os contatos recebidos e os documentos que os
+        clientes enviaram.
       </p>
 
       <div className="mt-8 grid gap-5 sm:grid-cols-3">

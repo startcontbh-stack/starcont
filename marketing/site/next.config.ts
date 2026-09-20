@@ -5,8 +5,8 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // O painel e a API nunca devem aparecer no Google
-        source: "/(admin|api)/:path*",
+        // O painel, a área do cliente e a API nunca devem aparecer no Google
+        source: "/(admin|portal|api)/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
     ];

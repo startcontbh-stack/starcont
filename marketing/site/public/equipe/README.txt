@@ -1,11 +1,20 @@
-FOTOS DA EQUIPE — COLOQUE SUAS FOTOS AQUI
+FOTOS DA EQUIPE
 
-Os arquivos desta pasta são PLACEHOLDERS ("Coloque sua foto aqui").
-Para trocar, basta substituir o arquivo mantendo EXATAMENTE o mesmo nome:
+Para trocar uma foto, substitua o arquivo mantendo EXATAMENTE o mesmo nome:
 
-  rodrigo.webp      -> foto do Rodrigo (contador / fundador)
-  equipe.webp       -> foto da equipe Start Cont
-  atendimento.webp  -> foto de atendimento / visita a um cliente
+  rodrigo.webp      -> Rodrigo Mendonça (contador / fundador)  [NO AR]
+
+A seção "Quem cuida da sua empresa" hoje tem dois cartões: o Rodrigo e a
+própria marca (que usa public/marca/logo-circular.webp). Os arquivos abaixo
+NÃO aparecem no site no momento — para voltar a usá-los, acrescente o item
+correspondente na lista "equipe" em src/lib/site.ts:
+
+  equipe.webp       -> foto da equipe Start Cont               [sem uso]
+  atendimento.webp  -> foto de atendimento / visita            [sem uso]
+
+Obs.: a foto do Rodrigo veio de um selfie espelhado (o logo do polo aparecia
+invertido). Ela foi desespelhada antes de entrar no site. Se mandar uma foto
+nova tirada com a câmera frontal, confira se o logo está legível.
 
 Recomendações:
   - Formato quadrado (ex.: 600x600 ou 800x800), rosto bem enquadrado e nítido.

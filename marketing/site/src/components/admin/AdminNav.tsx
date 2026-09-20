@@ -10,6 +10,7 @@ const items = [
   { href: "/admin/posts", label: "Posts do blog" },
   { href: "/admin/autores", label: "Autores" },
   { href: "/admin/leads", label: "Contatos (CRM)" },
+  { href: "/admin/envios", label: "Envios dos clientes" },
 ];
 
 export function AdminNav() {

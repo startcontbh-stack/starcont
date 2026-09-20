@@ -11,7 +11,10 @@ Start Cont (azul-marinho + vermelho):
   Google Ads: formulário → grava o lead no CRM → abre o WhatsApp
 - **Blog** (`/blog`, `/blog/[slug]`, `/blog/autor/[slug]`) com autor (E-E-A-T)
 - **Painel admin** (`/admin`) — login por senha, posts com editor rico e upload de
-  imagem, autores e CRM de contatos em Kanban
+  imagem, autores, CRM de contatos em Kanban e os envios dos clientes
+- **Área do cliente** (`/portal`) — login por senha própria, em formato de enquete:
+  o cliente informa o faturamento do mês e anexa o extrato bancário; o contador
+  vê tudo agrupado por mês em `/admin/envios` e baixa os arquivos
 
 ## Stack
 
@@ -29,7 +32,9 @@ Start Cont (azul-marinho + vermelho):
 | Serviços (textos, SEO, FAQ de cada página) | `src/lib/site.ts` → `servicos` |
 | Equipe (nome, cargo, frase) | `src/lib/site.ts` → `equipe` |
 | Responsáveis que aparecem no CRM | `src/lib/site.ts` → `responsaveisCrm` |
-| **Fotos da equipe** | `public/equipe/*.webp` — hoje são placeholders "Coloque sua foto aqui"; substitua mantendo o nome (ver `public/equipe/README.txt`) |
+| **Reel em destaque na home** | `src/lib/site.ts` → `reelDestaque` |
+| **Reels do carrossel** | `src/lib/site.ts` → `reels` |
+| **Fotos da equipe** | `public/equipe/*.webp` — `rodrigo.webp` já é a foto real; as outras ainda são placeholders (ver `public/equipe/README.txt`) |
 | CNPJ e CRC (aparecem no rodapé e no schema) | `src/lib/site.ts` → `site.cnpj` / `site.crc` (em branco até o cliente informar) |
 | Posts, autores e contatos | Painel `/admin` |
 
@@ -49,12 +54,13 @@ npm run dev                 # http://localhost:3000
 | --- | --- |
 | `DATABASE_URL` / `DATABASE_URL_UNPOOLED` | Conexões do Neon (criadas pela integração na Vercel). |
 | `ADMIN_PASSWORD` | Senha do painel `/admin`. |
+| `PORTAL_PASSWORD` | Senha da área do cliente `/portal` — a que circula no WhatsApp dos clientes. Sem ela, o `/portal` fica fechado. |
 | `SESSION_SECRET` | Segredo que assina o cookie de sessão. **Obrigatório em produção.** |
 | `NEXT_PUBLIC_WHATSAPP` | WhatsApp (só dígitos, com DDI). Padrão: `5531981211758`. |
 | `NEXT_PUBLIC_SITE_URL` | Domínio próprio (ex.: `https://www.startcont.com.br`). Sem ele, usa o domínio de produção da Vercel. |
 | `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | Código do Google Search Console (opcional). |
 | `NEXT_PUBLIC_GOOGLE_ADS_ID` | Tag do Google Ads na landing page (opcional, ex.: `AW-123456789`). |
-| `BLOB_READ_WRITE_TOKEN` | Upload de imagens em produção (criado com o Blob Store na Vercel). |
+| `BLOB_READ_WRITE_TOKEN` | Upload de imagens do blog e dos anexos do portal em produção (criado com o Blob Store na Vercel). |
 
 ## Deploy (Vercel)
 

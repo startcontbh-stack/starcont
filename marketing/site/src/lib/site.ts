@@ -86,36 +86,77 @@ export const diferenciais = [
 ] as const;
 
 /**
- * Pessoas que aparecem na seção "Equipe" e que podem ser marcadas como
- * responsáveis por um contato no CRM. As fotos são placeholders: basta
- * substituir o arquivo em public/equipe/ mantendo o mesmo nome.
+ * Quem aparece na seção "Equipe": o Rodrigo e, na segunda rolagem, a própria
+ * marca falando em nome da empresa. Os nomes daqui também podem ser marcados
+ * como responsáveis por um contato no CRM.
  */
 export const equipe = [
   {
-    nome: "Rodrigo",
+    nome: "Rodrigo Mendonça",
     cargo: "Contador · Fundador da Start Cont",
     frase:
       "Meu trabalho é simplificar o burocrático e facilitar o caminho do empresário — de perto, com atendimento personalizado.",
     foto: "/equipe/rodrigo.webp",
   },
   {
-    nome: "Equipe Start Cont",
-    cargo: "Atendimento e rotina contábil",
+    nome: "Start Cont",
+    cargo: "Assessoria Contábil · Belo Horizonte",
     frase:
-      "Mais do que contabilidade: entendemos o seu negócio para cuidar do que realmente importa, o crescimento da sua empresa.",
-    foto: "/equipe/equipe.webp",
-  },
-  {
-    nome: "Atendimento Start Cont",
-    cargo: "WhatsApp e visitas na Grande BH",
-    frase:
-      "Preferimos o WhatsApp e o telefone ao e-mail. É mais rápido, mais fácil e mais humano para quem está tocando o negócio.",
-    foto: "/equipe/atendimento.webp",
+      "Mais do que contabilidade: entendemos o seu negócio para cuidar do que realmente importa — o crescimento da sua empresa.",
+    foto: "/marca/logo-circular.webp",
   },
 ];
 
 /** Nomes que podem ser marcados como responsáveis no CRM. */
-export const responsaveisCrm = ["Rodrigo"] as const;
+export const responsaveisCrm = ["Rodrigo Mendonça"] as const;
+
+// ---------------------------------------------------------------------------
+// Reels do Instagram
+// ---------------------------------------------------------------------------
+
+export type Reel = {
+  /** Código do reel: o trecho depois de /reel/ na URL do Instagram. */
+  shortcode: string;
+  titulo: string;
+  /** Uma linha de contexto mostrada abaixo do vídeo. */
+  descricao: string;
+  /** Etiqueta curta (aparece como tag no card). */
+  tag?: string;
+};
+
+/**
+ * Reel em destaque — aparece na primeira dobra da home.
+ * Trocar aqui muda o vídeo do topo do site.
+ */
+export const reelDestaque: Reel = {
+  shortcode: "DcTYBwvxfcK",
+  titulo: "Contabilidade para barbearias e salões",
+  descricao:
+    "Implantação de sistemas de gestão, registro e homologação dos contratos de parceria entre salão e profissional parceiro, e a contabilidade completa do negócio.",
+  tag: "Barbearias e salões",
+};
+
+/**
+ * Demais reels — viram o carrossel da seção "Start Cont no Instagram".
+ * Para adicionar um vídeo, copie o link no Instagram (Compartilhar → Copiar link),
+ * pegue o código depois de /reel/ e acrescente um item aqui.
+ * O reel em destaque não deve se repetir nessa lista (o filtro abaixo garante isso).
+ */
+export const reels: Reel[] = [];
+
+/** Reels do carrossel, já sem o vídeo que está em destaque no topo. */
+export function reelsCarrossel() {
+  return reels.filter((r) => r.shortcode !== reelDestaque.shortcode);
+}
+
+export function reelUrl(shortcode: string) {
+  return `https://www.instagram.com/reel/${shortcode}/`;
+}
+
+/** URL oficial de embed do Instagram (funciona em iframe, sem o embed.js). */
+export function reelEmbedUrl(shortcode: string) {
+  return `https://www.instagram.com/reel/${shortcode}/embed/`;
+}
 
 /** Opções do campo "Do que você precisa?" dos formulários. */
 export const interesses = [

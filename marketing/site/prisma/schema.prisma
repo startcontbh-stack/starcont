@@ -48,6 +48,44 @@ model Author {
   updatedAt  DateTime @updatedAt
 }
 
+// Envio mensal do cliente pelo portal (/portal): ele informa o faturamento do
+// mês e anexa o extrato bancário. O contador vê tudo em /admin/envios.
+model Envio {
+  id          String  @id @default(cuid())
+  nomeCliente String
+  empresa     String?
+  telefone    String?
+  // Mês de referência no formato "AAAA-MM" (ordena como texto, o que mantém
+  // o agrupamento por competência simples no painel).
+  competencia String
+  // Em centavos: evita o arredondamento de float e o Decimal do Prisma, que
+  // não atravessa a fronteira server/client component.
+  faturamentoCentavos Int?
+  semMovimento        Boolean @default(false)
+  observacoes         String?
+  // Andamento no painel: recebido | em_analise | concluido
+  status    String         @default("recebido")
+  arquivos  EnvioArquivo[]
+  createdAt DateTime       @default(now())
+
+  @@index([competencia])
+  @@index([createdAt])
+}
+
+// Arquivo anexado a um envio (extrato bancário em PDF, print, notas).
+model EnvioArquivo {
+  id        String   @id @default(cuid())
+  envio     Envio    @relation(fields: [envioId], references: [id], onDelete: Cascade)
+  envioId   String
+  nome      String // nome original do arquivo, como o cliente enviou
+  url       String // Vercel Blob em produção, /uploads em dev
+  tipo      String // mime type
+  tamanho   Int // bytes
+  createdAt DateTime @default(now())
+
+  @@index([envioId])
+}
+
 model Lead {
   id           String   @id @default(cuid())
   nome         String

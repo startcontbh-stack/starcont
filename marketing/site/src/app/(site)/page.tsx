@@ -5,6 +5,8 @@ import {
   faqGeral,
   mensagemPadrao,
   prazoSimplesAberto,
+  reelDestaque,
+  reelsCarrossel,
   servicoPath,
   servicos,
   site,
@@ -16,13 +18,14 @@ import { Typewriter } from "@/components/ui/typewriter-text";
 import { GlowCard } from "@/components/ui/spotlight-card";
 import { Reveal } from "@/components/ui/reveal";
 import { EquipeReel } from "@/components/EquipeReel";
+import { ReelEmbed } from "@/components/ReelEmbed";
+import { ReelsCarousel } from "@/components/ReelsCarousel";
 import { PostCard } from "@/components/PostCard";
 import { Faq } from "@/components/Faq";
 import { FaqJsonLd } from "@/components/JsonLd";
 import {
   AlertIcon,
   ArrowIcon,
-  CalendarIcon,
   CheckIcon,
   InstagramIcon,
   MailIcon,
@@ -60,6 +63,7 @@ const destaquesHero = [
 export default async function HomePage() {
   const posts = await getPublishedPosts(3);
   const prazoAberto = prazoSimplesAberto();
+  const outrosReels = reelsCarrossel();
 
   return (
     <>
@@ -73,8 +77,14 @@ export default async function HomePage() {
         <div className="arco-marca -bottom-80 -left-64 h-[30rem] w-[30rem]" />
         <div className="pontilhado left-4 top-10 h-28 w-40 opacity-60" />
 
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 md:grid-cols-2 md:py-28">
-          <div className="animate-fade-up">
+        {/* Grid explícito: no desktop o reel ocupa a coluna 2 inteira; no
+            celular ele sobe pra logo depois do título (ordem do DOM), pra não
+            ficar enterrado embaixo dos botões e da lista. */}
+        {/* As duas linhas dividem a altura do reel e o texto encosta na
+            fronteira entre elas (self-end + self-start), o que deixa o bloco
+            da esquerda centrado na vertical sem abrir buraco no meio. */}
+        <div className="relative mx-auto grid max-w-6xl gap-8 px-5 py-10 md:grid-cols-2 md:grid-rows-[1fr_1fr] md:items-center md:gap-x-12 md:gap-y-8 md:py-24">
+          <div className="animate-fade-up md:col-start-1 md:row-start-1 md:self-end">
             <h1 className="font-display text-4xl font-bold leading-tight md:text-5xl">
               <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.3em] text-vermelho-claro md:text-sm">
                 Contabilidade em Belo Horizonte
@@ -89,12 +99,26 @@ export default async function HomePage() {
                 className="text-vermelho-claro"
               />
             </h1>
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-cinza-claro/90">
-              Assessoria contábil humanizada e próxima dos empresários — da simples
-              regularização ao acompanhamento mensal de grandes empresas e
-              indústrias.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
+          </div>
+
+          {/* REEL EM DESTAQUE */}
+          <div className="animate-fade-up md:col-start-2 md:row-span-2 md:row-start-1 md:self-center">
+            <div className="mx-auto w-full max-w-[350px]">
+              <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-vermelho/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-vermelho-claro">
+                <InstagramIcon className="h-3.5 w-3.5" /> Em destaque
+              </span>
+              <ReelEmbed reel={reelDestaque} eager />
+              <h2 className="mt-4 font-display text-lg font-semibold text-branco">
+                {reelDestaque.titulo}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-cinza-claro/85">
+                {reelDestaque.descricao}
+              </p>
+            </div>
+          </div>
+
+          <div className="animate-fade-up md:col-start-1 md:row-start-2 md:self-start">
+            <div className="flex flex-wrap gap-4">
               <a
                 href={whatsappLink(mensagemPadrao)}
                 target="_blank"
@@ -112,7 +136,7 @@ export default async function HomePage() {
                 <ArrowIcon className="h-4 w-4" />
               </Link>
             </div>
-            <ul className="mt-10 grid gap-2 text-sm text-cinza-claro/90 sm:grid-cols-2">
+            <ul className="mt-8 grid gap-2 text-sm text-cinza-claro/90 sm:grid-cols-2">
               {destaquesHero.map((d) => (
                 <li key={d} className="flex items-center gap-2">
                   <CheckIcon className="h-4 w-4 shrink-0 text-vermelho-claro" /> {d}
@@ -120,53 +144,62 @@ export default async function HomePage() {
               ))}
             </ul>
           </div>
-
-          <div className="animate-fade-up">
-            <GlowCard glowColor="red" customSize className="w-full !rounded-3xl">
-              <div className="relative z-10 p-4">
-                <span className="inline-flex items-center gap-2 rounded-full bg-vermelho/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-vermelho-claro">
-                  <AlertIcon className="h-3.5 w-3.5" /> Reforma Tributária
-                </span>
-                <p className="mt-4 font-display text-xl font-semibold text-branco">
-                  Simples Comum ou Simples Híbrido?
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-cinza-claro/85">
-                  A partir de 2027, empresas do Simples Nacional vão escolher se
-                  o IBS e a CBS ficam dentro ou fora do DAS. Não existe uma
-                  escolha melhor para todas as empresas — existe a mais adequada
-                  para a sua.
-                </p>
-                {prazoAberto && (
-                  <p className="mt-4 flex items-start gap-2 rounded-2xl bg-white/5 p-3 text-sm text-branco">
-                    <CalendarIcon className="mt-0.5 h-5 w-5 shrink-0 text-vermelho-claro" />
-                    <span>
-                      Empresas já abertas fazem a opção para o 1º semestre de 2027
-                      <strong className="text-vermelho-claro"> até 30 de setembro de 2026.</strong>
-                    </span>
-                  </p>
-                )}
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {["IBS", "CBS", "Split Payment", "Simples Nacional"].map((t) => (
-                    <span
-                      key={t}
-                      className="rounded-full bg-white/10 px-3 py-1 text-xs text-cinza-claro"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-                <Link
-                  href={servicoPath("planejamento-tributario")}
-                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-vermelho-claro hover:underline"
-                >
-                  Entenda o que muda para sua empresa
-                  <ArrowIcon className="h-4 w-4" />
-                </Link>
-              </div>
-            </GlowCard>
-          </div>
         </div>
       </section>
+
+      {/* AVISO DA REFORMA — o card do hero deu lugar ao reel, mas o prazo é
+          curto demais pra ficar só na seção lá embaixo. */}
+      {prazoAberto && (
+        <section className="border-b border-vermelho-escuro/30 bg-vermelho-escuro text-branco">
+          <div className="mx-auto flex max-w-6xl flex-col items-start gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="flex items-start gap-2.5 text-sm sm:items-center">
+              <AlertIcon className="mt-0.5 h-5 w-5 shrink-0 sm:mt-0" />
+              <span>
+                <strong className="font-semibold">Reforma Tributária:</strong>{" "}
+                empresas do Simples optam pelo regime de IBS e CBS do 1º semestre
+                de 2027 até <strong>30 de setembro de 2026</strong>.
+              </span>
+            </p>
+            <Link
+              href={servicoPath("planejamento-tributario")}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-vermelho-escuro transition-transform hover:scale-[1.02]"
+            >
+              Simular minha empresa <ArrowIcon className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* REELS DO INSTAGRAM */}
+      {outrosReels.length > 0 && (
+        <section className="bg-nevoa py-16">
+          <div className="mx-auto max-w-6xl">
+            <Reveal className="max-w-2xl px-5">
+              <span className="text-sm font-semibold uppercase tracking-widest text-vermelho">
+                Instagram
+              </span>
+              <h2 className="mt-3 font-display text-3xl font-bold text-azul-escuro">
+                Contabilidade explicada em um minuto
+              </h2>
+              <p className="mt-3 text-cinza-escuro">
+                Os últimos vídeos do{" "}
+                <a
+                  href={site.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-vermelho hover:underline"
+                >
+                  {site.instagramHandle}
+                </a>
+                . Arraste para o lado para ver todos.
+              </p>
+            </Reveal>
+            <Reveal delay={120} className="mt-10">
+              <ReelsCarousel reels={outrosReels} />
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       {/* EQUIPE */}
       <section id="equipe" className="mx-auto max-w-6xl scroll-mt-24 px-5 py-20">
