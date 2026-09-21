@@ -88,6 +88,11 @@ export function Footer() {
           </ul>
           <ul className="mt-6 space-y-2.5 border-t border-white/10 pt-5 text-sm">
             <li>
+              <Link href="/#planos" className="text-cinza-claro/85 hover:text-branco">
+                Planos e preços
+              </Link>
+            </li>
+            <li>
               <Link href="/contabilidade-belo-horizonte" className="text-cinza-claro/85 hover:text-branco">
                 Contabilidade em Belo Horizonte
               </Link>

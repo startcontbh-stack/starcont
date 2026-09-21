@@ -182,6 +182,115 @@ export function prazoSimplesAberto(agora = new Date()) {
 }
 
 // ---------------------------------------------------------------------------
+// Planos — a tabela de preços da home (seção #planos)
+// ---------------------------------------------------------------------------
+
+export type Plano = {
+  slug: string;
+  nome: string;
+  /** Frase curta embaixo do nome do plano. */
+  promessa: string;
+  icone: "pessoa" | "maleta" | "loja" | "tesoura";
+  /** Valor mínimo mensal, em reais. Sempre exibido como "a partir de". */
+  precoMensal: number;
+  itens: string[];
+  /** Fecho do card, na caixa cinza. */
+  nota: string;
+  /** Assunto da mensagem do WhatsApp — entra depois de "tenho interesse no". */
+  interesseWhatsapp: string;
+  destaque?: boolean;
+};
+
+export const planos: Plano[] = [
+  {
+    slug: "mei",
+    nome: "MEI",
+    promessa: "Sua empresa em dia, sem complicação.",
+    icone: "pessoa",
+    precoMensal: 70,
+    itens: [
+      "Orientação na abertura e regularização",
+      "Emissão e controle do DAS",
+      "Declaração anual (DASN-SIMEI)",
+      "Emissão de notas fiscais",
+      "Atendimento via WhatsApp",
+    ],
+    nota: "Mais tranquilidade para você focar no que realmente importa: o seu trabalho.",
+    interesseWhatsapp: "plano MEI",
+  },
+  {
+    slug: "profissionais-pj",
+    nome: "Profissionais PJ",
+    promessa: "Mais organização e economia para a sua rotina.",
+    icone: "maleta",
+    precoMensal: 300,
+    itens: [
+      "Contabilidade completa",
+      "Elaboração e envio das obrigações",
+      "Emissão de notas fiscais",
+      "Planejamento tributário",
+      "Atendimento consultivo via WhatsApp",
+    ],
+    nota: "Segurança e orientação para você crescer com tranquilidade.",
+    interesseWhatsapp: "plano para Profissionais PJ",
+  },
+  {
+    slug: "comerciantes",
+    nome: "Comerciantes",
+    promessa: "Gestão contábil com foco no seu crescimento.",
+    icone: "loja",
+    precoMensal: 500,
+    itens: [
+      "Contabilidade completa",
+      "Apuração de impostos (fiscal e tributário)",
+      "Acompanhamento de indicadores",
+      "Orientação para tomada de decisão",
+      "Atendimento próximo e consultivo",
+    ],
+    nota: "Uma contabilidade que entende o seu dia a dia e impulsiona o resultado do seu negócio.",
+    interesseWhatsapp: "plano para Comerciantes",
+  },
+  {
+    slug: "salao-e-barbearia",
+    nome: "Salão de Beleza e Barbearias",
+    promessa: "Regularidade e tranquilidade com a Lei do Salão Parceiro.",
+    icone: "tesoura",
+    precoMensal: 500,
+    destaque: true,
+    itens: [
+      "Contabilidade completa",
+      "Aplicação da Lei do Salão Parceiro",
+      "Registro do contrato de parceria",
+      "Apuração de impostos (fiscal e tributário)",
+      "Acompanhamento de indicadores",
+      "Orientação para tomada de decisão",
+      "Atendimento próximo e consultivo",
+    ],
+    nota: "Seu negócio valorizado, com segurança jurídica e foco no crescimento.",
+    interesseWhatsapp: "plano para Salão de Beleza e Barbearias",
+  },
+];
+
+/** Mensagem que já vai escrita no WhatsApp quando a pessoa clica num plano. */
+export function mensagemPlano(plano: Plano) {
+  return `Olá! Vim pelo site e tenho interesse no ${plano.interesseWhatsapp} (a partir de R$ ${plano.precoMensal} por mês). Pode me explicar como funciona?`;
+}
+
+/** Regimes e públicos atendidos — a faixa no rodapé da seção de planos. */
+export const publicosAtendidos = [
+  "MEI",
+  "Profissionais PJ",
+  "Comércio",
+  "Salão de Beleza e Barbearias",
+];
+
+export const regimesAtendidos = [
+  "Simples Nacional",
+  "Lucro Presumido",
+  "Lucro Real",
+];
+
+// ---------------------------------------------------------------------------
 // Serviços — cada um vira uma página em /servicos/[slug]
 // ---------------------------------------------------------------------------
 

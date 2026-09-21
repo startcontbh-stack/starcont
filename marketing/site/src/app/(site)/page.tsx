@@ -18,6 +18,7 @@ import { Typewriter } from "@/components/ui/typewriter-text";
 import { GlowCard } from "@/components/ui/spotlight-card";
 import { Reveal } from "@/components/ui/reveal";
 import { EquipeReel } from "@/components/EquipeReel";
+import { Planos } from "@/components/Planos";
 import { ReelEmbed } from "@/components/ReelEmbed";
 import { ReelsCarousel } from "@/components/ReelsCarousel";
 import { PostCard } from "@/components/PostCard";
@@ -331,6 +332,9 @@ export default async function HomePage() {
           </Reveal>
         </div>
       </section>
+
+      {/* PLANOS */}
+      <Planos />
 
       {/* DIFERENCIAIS */}
       <section className="mx-auto max-w-6xl px-5 py-20">
