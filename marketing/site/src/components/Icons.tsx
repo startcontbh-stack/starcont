@@ -255,6 +255,17 @@ export function ScissorsIcon(props: IconProps) {
   );
 }
 
+/** Selo com fita e check — certificado digital. */
+export function CertificateIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="12" cy="9" r="5.5" />
+      <path d="m9.7 9 1.7 1.7 3-3.2" />
+      <path d="M8.6 13.6 7.5 21l4.5-2.5 4.5 2.5-1.1-7.4" />
+    </svg>
+  );
+}
+
 /** Ícones dos planos (seção #planos). */
 export const planoIconMap = {
   pessoa: PersonIcon,
@@ -273,6 +284,7 @@ export const iconMap = {
   pin: MapPinIcon,
   chat: ChatIcon,
   bulb: BulbIcon,
+  certificado: CertificateIcon,
 } as const;
 
 export type IconName = keyof typeof iconMap;

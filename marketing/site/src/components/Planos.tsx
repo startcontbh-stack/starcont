@@ -25,7 +25,7 @@ export function Planos() {
   return (
     <section
       id="planos"
-      className="relative scroll-mt-24 overflow-hidden bg-gradient-to-b from-azul-profundo via-azul-escuro to-azul-profundo py-20 text-branco"
+      className="relative scroll-mt-24 overflow-hidden bg-gradient-to-b from-azul-profundo via-azul-escuro to-azul-profundo pb-16 pt-8 text-branco md:pb-20 md:pt-12"
     >
       <div className="pointer-events-none absolute -right-24 top-24 h-80 w-80 rounded-full bg-vermelho/10 blur-3xl" />
       <div className="arco-marca -left-72 -top-40 h-[34rem] w-[34rem] opacity-60" />
@@ -36,18 +36,41 @@ export function Planos() {
           <span className="text-sm font-semibold uppercase tracking-widest text-vermelho-claro">
             Planos
           </span>
-          <h2 className="mt-3 font-display text-3xl font-bold text-branco md:text-4xl">
+          <h2 className="mt-2 font-display text-2xl font-bold text-branco md:text-3xl">
             Contabilidade estratégica para empresas que querem{" "}
             <span className="text-vermelho-claro">crescer.</span>
           </h2>
-          <p className="mt-4 text-cinza-claro/85">
+          <p className="mt-3 text-sm text-cinza-claro/85 md:text-base">
             Mais que números, resultados reais. Escolha o plano do seu perfil e
             fale com a gente no WhatsApp — o valor final depende do volume de
             notas, do regime tributário e do número de funcionários.
           </p>
         </Reveal>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        {/* Celular: os cards empilham e cada um é alto, então os quatro valores
+            ficam num atalho logo no topo — a pessoa vê tudo sem rolar. */}
+        <ul className="mt-6 grid grid-cols-2 gap-3 md:hidden">
+          {planos.map((plano) => (
+            <li key={plano.slug}>
+              <a
+                href={`#plano-${plano.slug}`}
+                className="block rounded-2xl bg-white/10 px-4 py-3 transition-colors hover:bg-white/15"
+              >
+                <span className="block text-xs font-semibold uppercase leading-tight tracking-wider text-cinza-claro/80">
+                  {plano.nome}
+                </span>
+                <span className="mt-1 block font-display text-lg font-bold text-branco">
+                  <span className="text-xs font-medium text-cinza-claro/70">
+                    a partir de{" "}
+                  </span>
+                  R$ {plano.precoMensal}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-8 grid gap-6 md:mt-10 md:grid-cols-2 xl:grid-cols-4">
           {planos.map((plano) => (
             <CardPlano key={plano.slug} plano={plano} />
           ))}
@@ -93,7 +116,8 @@ function CardPlano({ plano }: { plano: Plano }) {
   return (
     <Reveal className="h-full">
       <article
-        className={`flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-card ring-1 transition-transform hover:-translate-y-1 ${
+        id={`plano-${plano.slug}`}
+        className={`scroll-mt-28 flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-card ring-1 transition-transform hover:-translate-y-1 ${
           plano.destaque ? "ring-2 ring-vermelho" : "ring-white/10"
         }`}
       >
@@ -101,15 +125,17 @@ function CardPlano({ plano }: { plano: Plano }) {
             A altura mínima a partir de md alinha a faixa escura dos quatro
             cards, que senão quebra em alturas diferentes conforme o tamanho
             do nome e da promessa de cada plano. */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-azul-escuro to-azul-profundo px-6 pb-6 pt-8 md:min-h-[17rem]">
+        <div className="relative overflow-hidden bg-gradient-to-br from-azul-escuro to-azul-profundo px-6 pb-5 pt-6 md:min-h-[13.5rem]">
           <div className="arco-marca -right-16 -top-20 h-48 w-48 opacity-70" />
-          <span className="relative grid h-14 w-14 place-items-center rounded-full border-2 border-vermelho text-vermelho-claro">
-            <Icone className="h-7 w-7" />
-          </span>
-          <h3 className="relative mt-5 font-display text-2xl font-bold leading-tight text-branco">
-            {plano.nome}
-          </h3>
-          <p className="relative mt-2 text-sm uppercase leading-relaxed tracking-wide text-cinza-claro/80">
+          <div className="relative flex items-center gap-3">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-vermelho text-vermelho-claro">
+              <Icone className="h-5 w-5" />
+            </span>
+            <h3 className="min-w-0 font-display text-xl font-bold leading-tight text-branco">
+              {plano.nome}
+            </h3>
+          </div>
+          <p className="relative mt-3 text-sm uppercase leading-relaxed tracking-wide text-cinza-claro/80">
             {plano.promessa}
           </p>
         </div>

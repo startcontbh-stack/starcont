@@ -81,6 +81,7 @@ export function EmpresaJsonLd() {
           "Departamento pessoal e eSocial",
           "Imposto de Renda Pessoa Física",
           "Regularização fiscal",
+          "Certificado digital e-CNPJ e e-CPF",
         ],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
@@ -157,6 +158,19 @@ export function ServicoJsonLd({ servico }: { servico: Servico }) {
     provider: empresaRef(),
     areaServed: areaServed(),
     audience: { "@type": "Audience", audienceType: servico.publico },
+    // Preço fixo (certificado digital): o Google pode mostrar o valor no resultado.
+    ...(servico.precos
+      ? {
+          offers: servico.precos.map((p) => ({
+            "@type": "Offer",
+            name: p.rotulo,
+            description: p.detalhe,
+            price: p.valor.toFixed(2),
+            priceCurrency: "BRL",
+            url: `${site.url}${servicoPath(servico.slug)}#valores`,
+          })),
+        }
+      : {}),
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: `O que está incluído — ${servico.titulo}`,

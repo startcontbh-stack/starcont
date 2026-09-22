@@ -15,10 +15,10 @@ import {
 import { getPublishedPosts } from "@/lib/posts";
 import { iconMap } from "@/components/Icons";
 import { Typewriter } from "@/components/ui/typewriter-text";
-import { GlowCard } from "@/components/ui/spotlight-card";
 import { Reveal } from "@/components/ui/reveal";
 import { EquipeReel } from "@/components/EquipeReel";
 import { Planos } from "@/components/Planos";
+import { ServicoCard } from "@/components/ServicoCard";
 import { ReelEmbed } from "@/components/ReelEmbed";
 import { ReelsCarousel } from "@/components/ReelsCarousel";
 import { PostCard } from "@/components/PostCard";
@@ -69,6 +69,10 @@ export default async function HomePage() {
   return (
     <>
       <FaqJsonLd perguntas={faqGeral} />
+
+      {/* PLANOS — primeiro de tudo: o cliente pediu que os valores apareçam
+          de cara, porque o preço de entrada baixo é o que puxa o contato. */}
+      <Planos />
 
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-to-b from-azul-escuro via-azul-escuro to-azul-profundo text-branco">
@@ -296,45 +300,12 @@ export default async function HomePage() {
             </h2>
           </Reveal>
           <Reveal delay={120} className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {servicos.map((s) => {
-              const Icon = iconMap[s.icone];
-              return (
-                <Link key={s.slug} href={servicoPath(s.slug)} className="group block">
-                  <GlowCard
-                    customSize
-                    glowColor={s.destaque ? "red" : "blue"}
-                    className="h-full w-full !rounded-3xl transition-transform group-hover:-translate-y-1"
-                  >
-                    <div className="relative z-10 flex h-full flex-col p-4">
-                      {s.destaque && (
-                        <span className="absolute right-2 top-2 rounded-full bg-vermelho/20 px-3 py-1 text-xs font-semibold text-vermelho-claro">
-                          Mais procurado
-                        </span>
-                      )}
-                      <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/10 text-vermelho-claro">
-                        <Icon className="h-7 w-7" />
-                      </span>
-                      <h3 className="mt-5 font-display text-xl font-semibold text-branco">
-                        {s.titulo}
-                      </h3>
-                      <p className="mt-3 leading-relaxed text-cinza-claro/85">
-                        {s.resumo}
-                      </p>
-                      <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-semibold text-vermelho-claro">
-                        Saiba mais
-                        <ArrowIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </span>
-                    </div>
-                  </GlowCard>
-                </Link>
-              );
-            })}
+            {servicos.map((s) => (
+              <ServicoCard key={s.slug} servico={s} />
+            ))}
           </Reveal>
         </div>
       </section>
-
-      {/* PLANOS */}
-      <Planos />
 
       {/* DIFERENCIAIS */}
       <section className="mx-auto max-w-6xl px-5 py-20">

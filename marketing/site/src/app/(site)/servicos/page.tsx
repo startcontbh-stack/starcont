@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { mensagemPadrao, servicoPath, servicos, whatsappLink } from "@/lib/site";
-import { ArrowIcon, WhatsAppIcon, iconMap } from "@/components/Icons";
+import { mensagemPadrao, servicos, whatsappLink } from "@/lib/site";
+import { WhatsAppIcon } from "@/components/Icons";
 import { BreadcrumbJsonLd } from "@/components/JsonLd";
-import { GlowCard } from "@/components/ui/spotlight-card";
+import { ServicoCard } from "@/components/ServicoCard";
 
 export const metadata: Metadata = {
   title: "Serviços de Contabilidade em Belo Horizonte",
   description:
-    "Abertura de empresa, contabilidade mensal, planejamento tributário, departamento pessoal, regularização fiscal e Imposto de Renda. Conheça os serviços da Start Cont.",
+    "Abertura de empresa, contabilidade mensal, planejamento tributário, departamento pessoal, regularização fiscal, Imposto de Renda e certificado digital. Conheça os serviços da Start Cont.",
   alternates: { canonical: "/servicos" },
   openGraph: {
     title: "Serviços de Contabilidade | Start Cont",
@@ -44,35 +43,9 @@ export default function ServicosPage() {
           </header>
 
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {servicos.map((s) => {
-              const Icon = iconMap[s.icone];
-              return (
-                <Link key={s.slug} href={servicoPath(s.slug)} className="group block">
-                  <GlowCard
-                    customSize
-                    glowColor={s.destaque ? "red" : "blue"}
-                    className="h-full w-full !rounded-3xl transition-transform group-hover:-translate-y-1"
-                  >
-                    <div className="relative z-10 flex h-full flex-col p-4">
-                      <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/10 text-vermelho-claro">
-                        <Icon className="h-7 w-7" />
-                      </span>
-                      <h2 className="mt-5 font-display text-xl font-semibold text-branco">
-                        {s.titulo}
-                      </h2>
-                      <p className="mt-1 text-xs uppercase tracking-widest text-cinza-claro/60">
-                        {s.publico}
-                      </p>
-                      <p className="mt-3 leading-relaxed text-cinza-claro/85">{s.resumo}</p>
-                      <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-semibold text-vermelho-claro">
-                        Saiba mais
-                        <ArrowIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </span>
-                    </div>
-                  </GlowCard>
-                </Link>
-              );
-            })}
+            {servicos.map((s) => (
+              <ServicoCard key={s.slug} servico={s} titulo="h2" mostrarPublico />
+            ))}
           </div>
         </div>
       </section>

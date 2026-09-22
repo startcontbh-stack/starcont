@@ -1,6 +1,8 @@
 import Link from "next/link";
 import {
   getServico,
+  mensagemPreco,
+  precoReais,
   servicoPath,
   site,
   whatsappLink,
@@ -105,6 +107,52 @@ export function ServicoLanding({ servico }: { servico: Servico }) {
           </div>
         </div>
       </section>
+
+      {/* VALORES — só para serviços com preço fixo (certificado digital) */}
+      {servico.precos && (
+        <section id="valores" className="mx-auto max-w-6xl scroll-mt-24 px-5 pt-16">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <span className="text-sm font-semibold uppercase tracking-widest text-vermelho">
+              Valores
+            </span>
+            <h2 className="mt-3 font-display text-2xl font-bold text-azul-escuro md:text-3xl">
+              Quanto custa
+            </h2>
+            <p className="mt-3 text-cinza-escuro">
+              Escolha o certificado e chame a Start Cont no WhatsApp para começar
+              o seu pedido.
+            </p>
+          </Reveal>
+          <Reveal
+            delay={120}
+            className="mx-auto mt-10 grid max-w-3xl gap-6 sm:grid-cols-2"
+          >
+            {servico.precos.map((p) => (
+              <div
+                key={p.rotulo}
+                className="flex flex-col rounded-3xl border border-cinza-claro bg-white p-7 text-center shadow-suave"
+              >
+                <span className="text-xs font-semibold uppercase tracking-widest text-vermelho">
+                  {p.rotulo}
+                </span>
+                <p className="mt-3 font-display text-5xl font-bold text-azul-escuro">
+                  {precoReais(p.valor)}
+                </p>
+                <p className="mt-2 text-sm text-cinza-escuro">{p.detalhe}</p>
+                <a
+                  href={whatsappLink(mensagemPreco(p))}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-vermelho px-5 py-3.5 font-semibold text-white transition-colors hover:bg-vermelho-escuro"
+                >
+                  <WhatsAppIcon className="h-5 w-5" />
+                  Quero o {p.rotulo}
+                </a>
+              </div>
+            ))}
+          </Reveal>
+        </section>
+      )}
 
       {/* BENEFÍCIOS */}
       <section className="mx-auto max-w-6xl px-5 py-16">

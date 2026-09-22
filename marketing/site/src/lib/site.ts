@@ -167,6 +167,7 @@ export const interesses = [
   "Departamento pessoal",
   "Regularização (CNPJ, CPF, MEI)",
   "Imposto de Renda (pessoa física)",
+  "Certificado digital (e-CNPJ / e-CPF)",
   "Outro assunto",
 ] as const;
 
@@ -294,12 +295,36 @@ export const regimesAtendidos = [
 // Serviços — cada um vira uma página em /servicos/[slug]
 // ---------------------------------------------------------------------------
 
+export type PrecoServico = {
+  /** Nome curto do item vendido, ex.: "e-CNPJ". */
+  rotulo: string;
+  /** Uma linha explicando para quem é. */
+  detalhe: string;
+  /** Valor em reais. */
+  valor: number;
+  /** Como o item aparece na mensagem do WhatsApp ("quero emitir o ..."). */
+  interesseWhatsapp: string;
+};
+
 export type Servico = {
   slug: string;
   titulo: string;
   resumo: string;
-  icone: "rocket" | "chart" | "percent" | "users" | "shield" | "document";
+  icone:
+    | "rocket"
+    | "chart"
+    | "percent"
+    | "users"
+    | "shield"
+    | "document"
+    | "certificado";
   destaque?: boolean;
+  /**
+   * Serviços com preço fixo (hoje só o certificado digital). Aparecem como
+   * etiquetas no card do serviço e como cartões com botão de WhatsApp na
+   * página. Serviços sob proposta simplesmente não têm este campo.
+   */
+  precos?: PrecoServico[];
   publico: "Pessoa física" | "Pessoa jurídica" | "Pessoa física e jurídica";
   interesse: (typeof interesses)[number];
   // SEO
@@ -803,10 +828,120 @@ export const servicos: Servico[] = [
     ],
     relacionados: ["regularizacao-fiscal", "planejamento-tributario"],
   },
+  {
+    slug: "certificado-digital",
+    titulo: "Certificado Digital e-CNPJ e e-CPF",
+    resumo:
+      "Certificado digital emitido em poucos minutos, com atendimento direto pelo WhatsApp. e-CNPJ para a sua empresa e e-CPF para pessoa física.",
+    icone: "certificado",
+    publico: "Pessoa física e jurídica",
+    interesse: "Certificado digital (e-CNPJ / e-CPF)",
+    precos: [
+      {
+        rotulo: "e-CNPJ",
+        detalhe: "Para a sua empresa (pessoa jurídica)",
+        valor: 180,
+        interesseWhatsapp: "o certificado digital e-CNPJ",
+      },
+      {
+        rotulo: "e-CPF",
+        detalhe: "Para você (pessoa física)",
+        valor: 140,
+        interesseWhatsapp: "o certificado digital e-CPF",
+      },
+    ],
+    keyword: "certificado digital em Belo Horizonte",
+    seoTitle: "Certificado Digital e-CNPJ e e-CPF em BH",
+    seoDescription:
+      "Certificado digital e-CNPJ por R$ 180 e e-CPF por R$ 140, emitido em poucos minutos. Fale com a Start Cont pelo WhatsApp e emita o seu.",
+    h1: "Certificado digital emitido em",
+    h1Destaque: "poucos minutos.",
+    intro:
+      "Emita o seu certificado digital com a Start Cont: e-CNPJ por R$ 180 para a sua empresa e e-CPF por R$ 140 para pessoa física, com emissão em poucos minutos e atendimento direto pelo WhatsApp.",
+    inclui: [
+      "Certificado e-CNPJ para a sua empresa, por R$ 180",
+      "Certificado e-CPF para pessoa física, por R$ 140",
+      "Emissão em poucos minutos",
+      "Atendimento direto pelo WhatsApp, do pedido à emissão",
+      "Orientação sobre os documentos necessários",
+    ],
+    paraQuem: [
+      "Empresas que emitem notas fiscais e enviam obrigações ao fisco",
+      "Quem está abrindo uma empresa e precisa do e-CNPJ",
+      "Empresas que precisam renovar um certificado vencido",
+      "Sócios e representantes que assinam documentos digitalmente",
+      "Pessoas físicas que precisam de assinatura com validade jurídica",
+      "Quem acessa serviços online da Receita Federal com certificado",
+    ],
+    beneficios: [
+      {
+        titulo: "Emissão em poucos minutos",
+        texto: "Sem esperar dias: o certificado fica pronto em poucos minutos.",
+      },
+      {
+        titulo: "Preço claro",
+        texto: "e-CNPJ por R$ 180 e e-CPF por R$ 140. Você sabe quanto vai pagar antes de pedir.",
+      },
+      {
+        titulo: "Atendimento humano",
+        texto:
+          "Você fala direto com a Start Cont pelo WhatsApp, do pedido até a emissão.",
+      },
+    ],
+    etapas: [
+      {
+        titulo: "Escolha o certificado",
+        texto: "e-CNPJ para a empresa ou e-CPF para pessoa física.",
+      },
+      {
+        titulo: "Chame no WhatsApp",
+        texto: "Informe os dados e receba a orientação sobre os documentos necessários.",
+      },
+      { titulo: "Emissão", texto: "O certificado é emitido em poucos minutos." },
+      {
+        titulo: "Pronto para usar",
+        texto:
+          "Com o certificado em mãos, você emite notas, assina documentos e acessa os serviços da Receita.",
+      },
+    ],
+    faq: [
+      {
+        pergunta: "Quanto custa o certificado digital?",
+        resposta:
+          "O certificado e-CNPJ custa R$ 180 e o e-CPF custa R$ 140.",
+      },
+      {
+        pergunta: "Em quanto tempo o certificado fica pronto?",
+        resposta:
+          "A emissão leva poucos minutos. Chame a Start Cont no WhatsApp para começar.",
+      },
+      {
+        pergunta: "Qual a diferença entre e-CNPJ e e-CPF?",
+        resposta:
+          "O e-CNPJ identifica a empresa (pessoa jurídica) e é usado para emitir notas, transmitir obrigações e assinar em nome dela. O e-CPF identifica a pessoa física e serve para assinar documentos e acessar serviços da Receita Federal com validade jurídica.",
+      },
+      {
+        pergunta: "Para que serve o certificado digital?",
+        resposta:
+          "Ele funciona como uma identidade digital: permite assinar documentos com validade jurídica, emitir notas fiscais eletrônicas, transmitir obrigações como SPED e eSocial e acessar serviços online do governo com segurança.",
+      },
+    ],
+    relacionados: ["abertura-de-empresa", "contabilidade-para-empresas"],
+  },
 ];
 
 export function getServico(slug: string) {
   return servicos.find((s) => s.slug === slug);
+}
+
+/** "R$ 180" — valores inteiros em reais, sem centavos (como no material da marca). */
+export function precoReais(valor: number) {
+  return `R$ ${valor.toLocaleString("pt-BR")}`;
+}
+
+/** Mensagem que já vai escrita no WhatsApp ao clicar num preço do serviço. */
+export function mensagemPreco(preco: PrecoServico) {
+  return `Olá! Vim pelo site e quero emitir ${preco.interesseWhatsapp} (${precoReais(preco.valor)}). Como funciona?`;
 }
 
 export function servicoPath(slug: string) {
