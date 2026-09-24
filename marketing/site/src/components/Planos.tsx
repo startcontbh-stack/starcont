@@ -1,20 +1,29 @@
+import Link from "next/link";
 import {
+  getServico,
   mensagemPlano,
+  mensagemPreco,
   planos,
+  precoReais,
   publicosAtendidos,
   regimesAtendidos,
+  servicoPath,
   site,
   whatsappLink,
   type Plano,
 } from "@/lib/site";
 import { Reveal } from "@/components/ui/reveal";
 import {
+  ArrowIcon,
+  CertificateIcon,
   ChartIcon,
   CheckIcon,
   MapPinIcon,
   planoIconMap,
   WhatsAppIcon,
 } from "@/components/Icons";
+
+const certificadoDigital = getServico("certificado-digital");
 
 /**
  * Tabela de planos da home. Cada card leva direto pro WhatsApp com a
@@ -75,6 +84,53 @@ export function Planos() {
             <CardPlano key={plano.slug} plano={plano} />
           ))}
         </div>
+
+        {/* Certificado digital: serviço avulso (não é assinatura mensal como
+            os planos acima), por isso ganha uma faixa própria logo abaixo em
+            vez de entrar na grade de cards. Preço e mensagem do WhatsApp vêm
+            do mesmo dado usado na página do serviço, sem duplicar nada. */}
+        {certificadoDigital && (
+          <Reveal delay={80} className="mt-6">
+            <div className="flex flex-col gap-5 rounded-3xl bg-white/10 p-6 ring-1 ring-white/10 sm:flex-row sm:items-center sm:justify-between md:p-7">
+              <div className="flex items-start gap-4">
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-vermelho text-vermelho-claro">
+                  <CertificateIcon className="h-6 w-6" />
+                </span>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-branco">
+                    Certificado digital
+                  </h3>
+                  <p className="mt-1 text-sm text-cinza-claro/85">
+                    Emitido em poucos minutos, direto pelo WhatsApp.{" "}
+                    {certificadoDigital.precos
+                      ?.map((p) => `${p.rotulo} ${precoReais(p.valor)}`)
+                      .join(" · ")}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-3 sm:shrink-0">
+                {certificadoDigital.precos?.map((preco) => (
+                  <a
+                    key={preco.rotulo}
+                    href={whatsappLink(mensagemPreco(preco))}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full bg-vermelho px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-vermelho-escuro"
+                  >
+                    <WhatsAppIcon className="h-4 w-4" />
+                    Emitir {preco.rotulo}
+                  </a>
+                ))}
+                <Link
+                  href={servicoPath(certificadoDigital.slug)}
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-cinza-claro/90 hover:text-branco hover:underline"
+                >
+                  Saiba mais <ArrowIcon className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          </Reveal>
+        )}
 
         {/* Faixa de públicos e regimes atendidos */}
         <Reveal className="mt-14 border-t border-white/10 pt-8">
