@@ -79,18 +79,12 @@ export function Planos() {
           ))}
         </ul>
 
-        <div className="mt-8 grid gap-6 md:mt-10 md:grid-cols-2 xl:grid-cols-4">
-          {planos.map((plano) => (
-            <CardPlano key={plano.slug} plano={plano} />
-          ))}
-        </div>
-
         {/* Certificado digital: serviço avulso (não é assinatura mensal como
-            os planos acima), por isso ganha uma faixa própria logo abaixo em
-            vez de entrar na grade de cards. Preço e mensagem do WhatsApp vêm
-            do mesmo dado usado na página do serviço, sem duplicar nada. */}
+            os planos abaixo), por isso ganha uma faixa própria acima da
+            grade de cards. Preço e mensagem do WhatsApp vêm do mesmo dado
+            usado na página do serviço, sem duplicar nada. */}
         {certificadoDigital && (
-          <Reveal delay={80} className="mt-6">
+          <Reveal delay={80} className="mt-8 md:mt-10">
             <div className="flex flex-col gap-5 rounded-3xl bg-white/10 p-6 ring-1 ring-white/10 sm:flex-row sm:items-center sm:justify-between md:p-7">
               <div className="flex items-start gap-4">
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-vermelho text-vermelho-claro">
@@ -131,6 +125,12 @@ export function Planos() {
             </div>
           </Reveal>
         )}
+
+        <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          {planos.map((plano) => (
+            <CardPlano key={plano.slug} plano={plano} />
+          ))}
+        </div>
 
         {/* Faixa de públicos e regimes atendidos */}
         <Reveal className="mt-14 border-t border-white/10 pt-8">
