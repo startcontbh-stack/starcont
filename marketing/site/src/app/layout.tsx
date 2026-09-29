@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Comfortaa, Inter, Montserrat } from "next/font/google";
+import Script from "next/script";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -23,6 +24,12 @@ const comfortaa = Comfortaa({
   weight: ["700"],
   display: "swap",
 });
+
+/**
+ * Tag do Google Ads (gtag.js), carregada em todas as páginas. A variável
+ * NEXT_PUBLIC_GOOGLE_ADS_ID na Vercel sobrescreve o ID padrão, se definida.
+ */
+const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-18481331615";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -88,6 +95,16 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-branco text-tinta">
         {children}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-gtag" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GOOGLE_ADS_ID}');`}
+        </Script>
       </body>
     </html>
   );

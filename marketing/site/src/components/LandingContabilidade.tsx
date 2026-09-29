@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Script from "next/script";
 import { faqGeral, servicoPath, servicos, site } from "@/lib/site";
 import { FormCard } from "./FormCard";
 import { Faq } from "./Faq";
@@ -7,12 +6,6 @@ import { EquipeReel } from "./EquipeReel";
 import { Logo } from "./Logo";
 import { CheckIcon, ChartIcon, iconMap } from "./Icons";
 import { EmpresaJsonLd, FaqJsonLd } from "./JsonLd";
-
-/**
- * ID de conversão do Google Ads (ex.: AW-123456789). A tag só é instalada
- * quando NEXT_PUBLIC_GOOGLE_ADS_ID estiver definido na Vercel.
- */
-const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
 
 const beneficios = [
   {
@@ -39,20 +32,6 @@ const beneficios = [
 export function LandingContabilidade() {
   return (
     <main className="flex-1 bg-white">
-      {GOOGLE_ADS_ID && (
-        <>
-          <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
-            strategy="afterInteractive"
-          />
-          <Script id="google-ads-gtag" strategy="afterInteractive">
-            {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${GOOGLE_ADS_ID}');`}
-          </Script>
-        </>
-      )}
       <EmpresaJsonLd />
       <FaqJsonLd perguntas={faqGeral} />
 
