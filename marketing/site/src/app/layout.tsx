@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Comfortaa, Inter, Montserrat } from "next/font/google";
-import Script from "next/script";
 import { site } from "@/lib/site";
 import { GOOGLE_ADS_ID } from "@/lib/googleAds";
 import { ConversaoWhatsApp } from "@/components/ConversaoWhatsApp";
@@ -89,18 +88,24 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${inter.variable} ${montserrat.variable} ${comfortaa.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-branco text-tinta">
-        {children}
-        <Script
+      <head>
+        {/* Tag do Google Ads direto no HTML, como o Google pede — o verificador
+            do Ads não enxerga a tag injetada depois pelo next/script. */}
+        <script
+          async
           src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
-          strategy="afterInteractive"
         />
-        <Script id="google-ads-gtag" strategy="afterInteractive">
-          {`window.dataLayer = window.dataLayer || [];
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${GOOGLE_ADS_ID}');`}
-        </Script>
+gtag('config', '${GOOGLE_ADS_ID}');`,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-branco text-tinta">
+        {children}
         <ConversaoWhatsApp />
       </body>
     </html>
