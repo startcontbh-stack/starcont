@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { interesses, whatsappLink } from "@/lib/site";
+import { registrarConversaoContato } from "@/lib/googleAds";
 import { WhatsAppIcon } from "./Icons";
 
 export function LeadForm({
@@ -35,6 +36,7 @@ export function LeadForm({
     }
 
     setLoading(true);
+    registrarConversaoContato();
 
     // Registra o lead no CRM (não bloqueia o WhatsApp se falhar)
     try {

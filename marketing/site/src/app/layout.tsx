@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Comfortaa, Inter, Montserrat } from "next/font/google";
 import Script from "next/script";
 import { site } from "@/lib/site";
+import { GOOGLE_ADS_ID } from "@/lib/googleAds";
+import { ConversaoWhatsApp } from "@/components/ConversaoWhatsApp";
 import "./globals.css";
 
 const inter = Inter({
@@ -24,12 +26,6 @@ const comfortaa = Comfortaa({
   weight: ["700"],
   display: "swap",
 });
-
-/**
- * Tag do Google Ads (gtag.js), carregada em todas as páginas. A variável
- * NEXT_PUBLIC_GOOGLE_ADS_ID na Vercel sobrescreve o ID padrão, se definida.
- */
-const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-18481331615";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -105,6 +101,7 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', '${GOOGLE_ADS_ID}');`}
         </Script>
+        <ConversaoWhatsApp />
       </body>
     </html>
   );
