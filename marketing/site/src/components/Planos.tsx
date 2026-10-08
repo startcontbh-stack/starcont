@@ -41,7 +41,7 @@ export function Planos() {
       <div className="pontilhado right-6 top-10 h-28 w-40 opacity-50" />
 
       <div className="relative mx-auto max-w-6xl px-5">
-        <Reveal className="max-w-3xl">
+        <div className="max-w-3xl">
           <span className="text-sm font-semibold uppercase tracking-widest text-vermelho-claro">
             Planos
           </span>
@@ -54,7 +54,7 @@ export function Planos() {
             fale com a gente no WhatsApp — o valor final depende do volume de
             notas, do regime tributário e do número de funcionários.
           </p>
-        </Reveal>
+        </div>
 
         {/* Celular: os cards empilham e cada um é alto, então os quatro valores
             ficam num atalho logo no topo — a pessoa vê tudo sem rolar. */}
@@ -84,7 +84,7 @@ export function Planos() {
             grade de cards. Preço e mensagem do WhatsApp vêm do mesmo dado
             usado na página do serviço, sem duplicar nada. */}
         {certificadoDigital && (
-          <Reveal delay={80} className="mt-8 md:mt-10">
+          <div className="mt-8 md:mt-10">
             <div className="flex flex-col gap-5 rounded-3xl bg-white/10 p-6 ring-1 ring-white/10 sm:flex-row sm:items-center sm:justify-between md:p-7">
               <div className="flex items-start gap-4">
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-vermelho text-vermelho-claro">
@@ -123,7 +123,7 @@ export function Planos() {
                 </Link>
               </div>
             </div>
-          </Reveal>
+          </div>
         )}
 
         <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -170,7 +170,7 @@ function CardPlano({ plano }: { plano: Plano }) {
   const Icone = planoIconMap[plano.icone];
 
   return (
-    <Reveal className="h-full">
+    <div className="h-full">
       <article
         id={`plano-${plano.slug}`}
         className={`scroll-mt-28 flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-card ring-1 transition-transform hover:-translate-y-1 ${
@@ -241,6 +241,6 @@ function CardPlano({ plano }: { plano: Plano }) {
           </p>
         </div>
       </article>
-    </Reveal>
+    </div>
   );
 }

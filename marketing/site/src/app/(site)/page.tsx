@@ -112,7 +112,7 @@ export default async function HomePage() {
               <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-vermelho/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-vermelho-claro">
                 <InstagramIcon className="h-3.5 w-3.5" /> Em destaque
               </span>
-              <ReelEmbed reel={reelDestaque} eager />
+              <ReelEmbed reel={reelDestaque} />
               <h2 className="mt-4 font-display text-lg font-semibold text-branco">
                 {reelDestaque.titulo}
               </h2>

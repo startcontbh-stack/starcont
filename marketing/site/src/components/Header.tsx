@@ -21,7 +21,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-cinza-claro/70 bg-branco/85 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-5">
-        <Link href="/" aria-label="Start Cont — início">
+        <Link href="/" aria-label="Start Cont Assessoria Contábil — início">
           <Logo />
         </Link>
 

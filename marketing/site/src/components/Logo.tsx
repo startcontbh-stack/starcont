@@ -57,7 +57,7 @@ export function Logo({
   const lg = size === "lg";
 
   return (
-    <span className="flex items-center gap-2.5" aria-label="Start Cont — Assessoria Contábil">
+    <span className="flex items-center gap-2.5" role="img" aria-label="Start Cont — Assessoria Contábil">
       <LogoMark
         idPrefix={`sc-${variant}-${size}`}
         className={lg ? "h-14 w-14" : "h-10 w-10 md:h-11 md:w-11"}
