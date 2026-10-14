@@ -117,14 +117,12 @@ gtag('config', '${GOOGLE_ADS_ID}');`,
       </head>
       <body className="min-h-full flex flex-col bg-branco text-tinta">
         {/* Google Tag Manager (noscript) */}
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-PDHJ99F2"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript>
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PDHJ99F2"
+height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
+          }}
+        />
         {/* End Google Tag Manager (noscript) */}
         {children}
         <ConversaoWhatsApp />
