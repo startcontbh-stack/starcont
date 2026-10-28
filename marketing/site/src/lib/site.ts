@@ -853,15 +853,15 @@ export const servicos: Servico[] = [
     keyword: "certificado digital em Belo Horizonte",
     seoTitle: "Certificado Digital e-CNPJ e e-CPF em BH",
     seoDescription:
-      "Certificado digital e-CNPJ por R$ 180 e e-CPF por R$ 140, emitido em poucos minutos. Fale com a Start Cont pelo WhatsApp e emita o seu.",
-    h1: "Certificado digital emitido em",
-    h1Destaque: "poucos minutos.",
+      "Certificado digital e-CNPJ por R$ 180 e e-CPF por R$ 140, com suporte e intermediação junto a certificadoras parceiras. Fale com a Start Cont pelo WhatsApp.",
+    h1: "Certificado digital com",
+    h1Destaque: "atendimento especializado.",
     intro:
-      "Emita o seu certificado digital com a Start Cont: e-CNPJ por R$ 180 para a sua empresa e e-CPF por R$ 140 para pessoa física, com emissão em poucos minutos e atendimento direto pelo WhatsApp.",
+      "Suporte completo para o seu certificado digital com a Start Cont: e-CNPJ por R$ 180 para a sua empresa e e-CPF por R$ 140 para pessoa física, com intermediação junto a certificadoras parceiras e atendimento direto pelo WhatsApp.",
     inclui: [
       "Certificado e-CNPJ para a sua empresa, por R$ 180",
       "Certificado e-CPF para pessoa física, por R$ 140",
-      "Emissão em poucos minutos",
+      "Intermediação junto a certificadoras parceiras",
       "Atendimento direto pelo WhatsApp, do pedido à emissão",
       "Orientação sobre os documentos necessários",
     ],
@@ -875,8 +875,8 @@ export const servicos: Servico[] = [
     ],
     beneficios: [
       {
-        titulo: "Emissão em poucos minutos",
-        texto: "Sem esperar dias: o certificado fica pronto em poucos minutos.",
+        titulo: "Suporte na emissão",
+        texto: "Orientamos o processo junto às certificadoras parceiras, do pedido à conclusão.",
       },
       {
         titulo: "Preço claro",
@@ -897,7 +897,7 @@ export const servicos: Servico[] = [
         titulo: "Chame no WhatsApp",
         texto: "Informe os dados e receba a orientação sobre os documentos necessários.",
       },
-      { titulo: "Emissão", texto: "O certificado é emitido em poucos minutos." },
+      { titulo: "Emissão", texto: "A emissão é feita pela certificadora parceira, com o nosso acompanhamento." },
       {
         titulo: "Pronto para usar",
         texto:
@@ -913,7 +913,7 @@ export const servicos: Servico[] = [
       {
         pergunta: "Em quanto tempo o certificado fica pronto?",
         resposta:
-          "A emissão leva poucos minutos. Chame a Start Cont no WhatsApp para começar.",
+          "O prazo depende da certificadora parceira e da validação dos documentos. Chame a Start Cont no WhatsApp para começar.",
       },
       {
         pergunta: "Qual a diferença entre e-CNPJ e e-CPF?",
