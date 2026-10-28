@@ -432,7 +432,7 @@ export const servicos: Servico[] = [
     slug: "abertura-de-empresa",
     titulo: "Abertura de Empresa",
     resumo:
-      "Do CNPJ ao alvará: definimos com você o tipo de empresa, as atividades e o regime tributário certos — e cuidamos de toda a burocracia.",
+      "Assessoria completa em processos de abertura, apoio em licenças e definição de regime tributário.",
     icone: "rocket",
     publico: "Pessoa jurídica",
     interesse: "Abrir uma empresa",
@@ -677,7 +677,7 @@ export const servicos: Servico[] = [
     slug: "regularizacao-fiscal",
     titulo: "Regularização Fiscal (PF e PJ)",
     resumo:
-      "CNPJ inapto, dívidas, declarações atrasadas ou CPF pendente? Levantamos as pendências e colocamos tudo em ordem, do jeito mais simples.",
+      "Consultoria para análise de pendências corporativas e diagnóstico fiscal.",
     icone: "shield",
     publico: "Pessoa física e jurídica",
     interesse: "Regularização (CNPJ, CPF, MEI)",
@@ -832,7 +832,7 @@ export const servicos: Servico[] = [
     slug: "certificado-digital",
     titulo: "Certificado Digital e-CNPJ e e-CPF",
     resumo:
-      "Certificado digital emitido em poucos minutos, com atendimento direto pelo WhatsApp. e-CNPJ para a sua empresa e e-CPF para pessoa física.",
+      "Suporte e intermediação na emissão de e-CNPJ e e-CPF com certificadoras parceiras.",
     icone: "certificado",
     publico: "Pessoa física e jurídica",
     interesse: "Certificado digital (e-CNPJ / e-CPF)",

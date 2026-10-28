@@ -95,7 +95,7 @@ export function Planos() {
                     Certificado digital
                   </h3>
                   <p className="mt-1 text-sm text-cinza-claro/85">
-                    Emitido em poucos minutos, direto pelo WhatsApp.{" "}
+                    Suporte e intermediação na emissão com certificadoras parceiras.{" "}
                     {certificadoDigital.precos
                       ?.map((p) => `${p.rotulo} ${precoReais(p.valor)}`)
                       .join(" · ")}

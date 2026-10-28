@@ -116,6 +116,9 @@ export function Footer() {
       </div>
 
       <div className="relative border-t border-white/10">
+        <p className="mx-auto max-w-6xl px-5 pt-6 text-center text-xs leading-relaxed text-cinza-claro/60 sm:text-left">
+          A Start Cont é uma empresa privada de assessoria contábil e consultoria empresarial, sem vínculo ou representação oficial com órgãos governamentais ou entidades públicas.
+        </p>
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-5 py-6 text-center text-xs text-cinza-claro/60 sm:flex-row sm:text-left">
           <span>
             © {new Date().getFullYear()} {site.nomeCompleto}
