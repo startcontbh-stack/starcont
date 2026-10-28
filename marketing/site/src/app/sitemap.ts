@@ -38,6 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     { url: `${base}/blog`, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${base}/politica-de-privacidade`, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const paginasServico: MetadataRoute.Sitemap = servicos.map((s) => ({

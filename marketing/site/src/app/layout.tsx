@@ -3,6 +3,7 @@ import { Comfortaa, Inter, Montserrat } from "next/font/google";
 import { site } from "@/lib/site";
 import { GOOGLE_ADS_ID } from "@/lib/googleAds";
 import { ConversaoWhatsApp } from "@/components/ConversaoWhatsApp";
+import { CookieConsent } from "@/components/CookieConsent";
 import "./globals.css";
 
 const inter = Inter({
@@ -89,6 +90,16 @@ export default function RootLayout({
       className={`${inter.variable} ${montserrat.variable} ${comfortaa.variable} h-full antialiased`}
     >
       <head>
+        {/* Modo de Consentimento do Google (LGPD): tudo negado até o visitante
+            aceitar no aviso de cookies. Precisa vir antes de qualquer tag. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});
+try{if(localStorage.getItem('startcont_consent')==='granted'){gtag('consent','update',{ad_storage:'granted',ad_user_data:'granted',ad_personalization:'granted',analytics_storage:'granted'});}}catch(e){}`,
+          }}
+        />
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
@@ -126,6 +137,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
         {/* End Google Tag Manager (noscript) */}
         {children}
         <ConversaoWhatsApp />
+        <CookieConsent />
       </body>
     </html>
   );

@@ -9,6 +9,7 @@ import {
   WhatsAppIcon,
 } from "./Icons";
 import { Logo } from "./Logo";
+import { PreferenciasCookies } from "./CookieConsent";
 
 export function Footer() {
   return (
@@ -101,6 +102,14 @@ export function Footer() {
               <Link href="/blog" className="text-cinza-claro/85 hover:text-branco">
                 Blog
               </Link>
+            </li>
+            <li>
+              <Link href="/politica-de-privacidade" className="text-cinza-claro/85 hover:text-branco">
+                Política de Privacidade
+              </Link>
+            </li>
+            <li>
+              <PreferenciasCookies className="text-cinza-claro/85 hover:text-branco" />
             </li>
             <li>
               <Link
