@@ -112,7 +112,7 @@ export function Planos() {
                     className="inline-flex items-center gap-2 rounded-full bg-vermelho px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-vermelho-escuro"
                   >
                     <WhatsAppIcon className="h-4 w-4" />
-                    Emitir {preco.rotulo}
+                    Solicitar {preco.rotulo}
                   </a>
                 ))}
                 <Link

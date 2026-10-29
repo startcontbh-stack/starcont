@@ -36,7 +36,7 @@ export default function ServicosPage() {
               Serviços de contabilidade para pessoas e empresas
             </h1>
             <p className="mt-4 text-cinza-claro/90">
-              Da abertura do CNPJ ao acompanhamento mensal de grandes empresas e
+              Da abertura da empresa ao acompanhamento mensal de grandes empresas e
               indústrias — com atendimento próximo na Grande BH e online em todo o
               Brasil.
             </p>

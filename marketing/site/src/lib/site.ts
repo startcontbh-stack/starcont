@@ -165,7 +165,7 @@ export const interesses = [
   "Trocar de contador",
   "Planejamento tributário / Reforma",
   "Departamento pessoal",
-  "Regularização (CNPJ, CPF, MEI)",
+  "Regularização fiscal (empresa, CPF, MEI)",
   "Imposto de Renda (pessoa física)",
   "Certificado digital (e-CNPJ / e-CPF)",
   "Outro assunto",
@@ -302,7 +302,7 @@ export type PrecoServico = {
   detalhe: string;
   /** Valor em reais. */
   valor: number;
-  /** Como o item aparece na mensagem do WhatsApp ("quero emitir o ..."). */
+  /** Como o item aparece na mensagem do WhatsApp ("quero solicitar o ..."). */
   interesseWhatsapp: string;
 };
 
@@ -439,17 +439,17 @@ export const servicos: Servico[] = [
     keyword: "abertura de empresa em Belo Horizonte",
     seoTitle: "Abertura de Empresa em BH com Contador",
     seoDescription:
-      "Abra sua empresa em Belo Horizonte com a Start Cont: tipo de empresa, CNAE e regime tributário certos, CNPJ, inscrições e alvará. Fale pelo WhatsApp.",
+      "Planejamento e assessoria na abertura da sua empresa em Belo Horizonte: tipo de empresa, CNAE e regime tributário certos, com a Start Cont. Fale pelo WhatsApp.",
     h1: "Abra sua empresa do jeito certo,",
     h1Destaque: "sem dor de cabeça.",
     intro:
-      "A Start Cont cuida de toda a abertura da sua empresa — da escolha do tipo de empresa e do regime tributário ao CNPJ, inscrições e alvará — com atendimento próximo em Belo Horizonte e online para todo o Brasil.",
+      "A Start Cont oferece planejamento e assessoria na abertura da sua empresa — da escolha do tipo de empresa e do regime tributário ao acompanhamento dos registros e licenças — com atendimento próximo em Belo Horizonte e online para todo o Brasil.",
     inclui: [
       "Análise do modelo de negócio e escolha do tipo de empresa (MEI, SLU ou LTDA)",
       "Definição das atividades (CNAE) e do regime tributário mais vantajoso",
       "Contrato social e registro na Junta Comercial",
-      "CNPJ, inscrição municipal e inscrição estadual quando necessária",
-      "Orientação sobre alvará de funcionamento e licenças",
+      "Acompanhamento dos registros e inscrições necessários",
+      "Orientação sobre licenças de funcionamento",
       "Transformação de MEI em microempresa (ME)",
     ],
     paraQuem: [
@@ -680,25 +680,25 @@ export const servicos: Servico[] = [
       "Consultoria para análise de pendências corporativas e diagnóstico fiscal.",
     icone: "shield",
     publico: "Pessoa física e jurídica",
-    interesse: "Regularização (CNPJ, CPF, MEI)",
+    interesse: "Regularização fiscal (empresa, CPF, MEI)",
     keyword: "regularização de empresa em Belo Horizonte",
     seoTitle: "Regularização de Empresa, MEI e CPF em BH",
     seoDescription:
-      "Regularize CNPJ, MEI, CPF e declarações em atraso com a Start Cont: levantamento de pendências, parcelamentos e certidões negativas. Atendimento em BH e online.",
+      "Consultoria contábil para regularidade de empresas, MEI e pessoas físicas: diagnóstico de pendências, declarações em atraso e parcelamentos. Atendimento em BH e online.",
     h1: "Pendências com o fisco?",
     h1Destaque: "A gente resolve com você.",
     intro:
-      "A Start Cont regulariza a situação fiscal de pessoas físicas e empresas — de uma simples declaração atrasada a débitos, parcelamentos e CNPJ inapto — com diagnóstico claro e o caminho mais simples para você voltar a ficar em dia.",
+      "A Start Cont regulariza a situação fiscal de pessoas físicas e empresas — de uma simples declaração atrasada a débitos e parcelamentos — com diagnóstico claro e o caminho mais simples para você voltar a ficar em dia.",
     inclui: [
       "Diagnóstico de pendências na Receita Federal, no Estado e no Município",
       "Entrega de declarações em atraso (PF, PJ e MEI)",
       "Parcelamento e negociação de débitos",
-      "Regularização de CNPJ inapto ou suspenso",
+      "Consultoria contábil para regularidade de empresas",
       "Emissão de certidões negativas de débitos",
       "Baixa (encerramento) de empresas",
     ],
     paraQuem: [
-      "Empresas com CNPJ inapto ou com débitos",
+      "Empresas com pendências fiscais ou débitos",
       "MEIs com DAS ou declaração anual em atraso",
       "Pessoas com CPF pendente de regularização",
       "Quem precisa de certidão negativa para financiamento ou licitação",
@@ -733,9 +733,9 @@ export const servicos: Servico[] = [
     ],
     faq: [
       {
-        pergunta: "Meu CNPJ está inapto. Ainda dá para regularizar?",
+        pergunta: "Minha empresa está com pendências fiscais. Ainda dá para regularizar?",
         resposta:
-          "Na maioria dos casos, sim. O CNPJ costuma ficar inapto por falta de entrega de declarações. Com as obrigações pendentes entregues e os débitos tratados, é possível pedir a regularização.",
+          "Na maioria dos casos, sim. A situação costuma se agravar por falta de entrega de declarações. Com as obrigações pendentes entregues e os débitos tratados, é possível buscar a regularização.",
       },
       {
         pergunta: "Tenho dívidas com a Receita. Posso parcelar?",
@@ -941,7 +941,7 @@ export function precoReais(valor: number) {
 
 /** Mensagem que já vai escrita no WhatsApp ao clicar num preço do serviço. */
 export function mensagemPreco(preco: PrecoServico) {
-  return `Olá! Vim pelo site e quero emitir ${preco.interesseWhatsapp} (${precoReais(preco.valor)}). Como funciona?`;
+  return `Olá! Vim pelo site e quero solicitar ${preco.interesseWhatsapp} (${precoReais(preco.valor)}). Como funciona?`;
 }
 
 export function servicoPath(slug: string) {

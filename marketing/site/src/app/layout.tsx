@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     "reforma tributária Simples Nacional",
     "departamento pessoal",
     "imposto de renda BH",
-    "regularização de CNPJ",
+    "consultoria em diagnóstico fiscal corporativo",
   ],
   authors: [{ name: site.nomeCompleto, url: site.url }],
   creator: site.nomeCompleto,
